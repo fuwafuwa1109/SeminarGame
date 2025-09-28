@@ -31,7 +31,6 @@ void AnimSpriteComponent::update()
 				mCurrFrame = (float)(mCurrentAnim->frames.size() - 1);
 				// アニメーション終了
 				mIsAnimating = false;
-				return;
 			}
 		}
 		// 表示テクスチャ更新

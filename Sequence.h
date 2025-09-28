@@ -30,7 +30,7 @@ public:
     void pushUI(class UIScreen* screen);
 
     Texture2D* getTexture(const std::string& fileName);
-
+    std::vector<Texture2D*> getAnimationFrames(const std::string& baseName, const std::string& ext, int frameCount);
 protected:
     // そのシーケンスに存在するアクターの配列
     std::vector<class Actor*> mActors;

@@ -7,7 +7,6 @@
 #include "AnimSpriteComponent.h"
 #include "AttackComponent.h"
 
-// �A�j���[�V�����̍Đ����s��
 void PlayerState::enter()
 {
 	mPlayer->getAnimSpriteComp()->play(&mAnim);
@@ -21,8 +20,6 @@ PlayerState::PlayerState(PlayerActor* player, Type type)
 
 void PlayerState::computeAttackRectPos(Rectangle& rec)
 {
-	// �Ƃ肠�����A�v���C���[�̐^���ʂ�AttackRect�𒲐����Ă���
-	// �g����������Έ����𑝂₵�Ă�������
 	if(mPlayer->getForward()>0) rec.x = mPlayer->getRectangle().x + mPlayer->getRectangle().width;
 	else rec.x = mPlayer->getRectangle().x - rec.width;
 	rec.y = mPlayer->getRectangle().y;
@@ -35,39 +32,31 @@ Idle::Idle(PlayerActor* player)
 	, mLastPressedTimeD(0.0)
 	, mDoubleTapWindow(0.2)
 {
-	std::vector<Texture2D*> frames = { mPlayer->getSequence()->getTexture("Assets/testPlayerIdle.png")};
-	mAnim.frames = frames;
+	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("idle", "png", 5); // "idle_0.png" から "idle_4.png" 
 	mAnim.loop = true;
 }
 
 void Idle::input()
 {
-	// �W�����v
 	if (IsKeyPressed(KEY_SPACE)) {
 		mPlayer->changeState(Type::Jump);
 	}
-	// �ړ�
 	else if (IsKeyDown(KEY_D) || IsKeyDown(KEY_A)) {
-		// ���������͂Ȃ�����
 		if (IsKeyDown(KEY_A) && GetTime() - mLastPressedTimeA < mDoubleTapWindow ||
 			IsKeyDown(KEY_D) && GetTime() - mLastPressedTimeD < mDoubleTapWindow) {
 			mPlayer->changeState(Type::Dodge);
 		}
-		// �����łȂ��Ȃ������
 		else {
 			mPlayer->changeState(Type::Walk);
 		}
 	}
-	// �ʏ�U��
 	else if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 		mPlayer->changeState(Type::NormalAttack);
 	}
-	// �K�[�h
 	else if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
 		mPlayer->changeState(Type::Guard);
 	}
 
-	// ��ԑJ�ڔ����,�Ō��A,D�����������Ԃ��L�^
 	if (IsKeyPressed(KEY_A)) mLastPressedTimeA = GetTime();
 	if (IsKeyPressed(KEY_D)) mLastPressedTimeD = GetTime();
 }
@@ -82,14 +71,13 @@ Walk::Walk(PlayerActor* player)
 	: PlayerState(player, Type::Walk)
 	, mWalkSpeed(180.0f)
 {
-	std::vector<Texture2D*> frames = { mPlayer->getSequence()->getTexture("Assets/testPlayerWalk.png") };
-	mAnim.frames = frames;
+	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("walk", "png", 9); // "walk_0.png" から "walk_9.png"
 	mAnim.loop = true;
 }
 
 void Walk::input()
 {
-	// �W�����v
+	// Jump
 	if (IsKeyPressed(KEY_SPACE)) {
 		mPlayer->changeState(Type::Jump);
 	}
@@ -97,11 +85,11 @@ void Walk::input()
 	else if (!(IsKeyDown(KEY_D) || IsKeyDown(KEY_A))) {
 		mPlayer->changeState(Type::Idle);
 	}
-	// �K�[�h
+	// Guard
 	else if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
 		mPlayer->changeState(Type::Guard);
 	}
-	// �ʏ�U��
+	// Attack
 	else if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 		mPlayer->changeState(Type::NormalAttack);
 	}
@@ -109,7 +97,6 @@ void Walk::input()
 
 void Walk::update()
 {
-	// ���������x��ݒ肵������
 	if (IsKeyDown(KEY_D) || IsKeyDown(KEY_A)) {
 		mPlayer->getPlayerMove()->setVelocityX(mWalkSpeed);
 	}
@@ -119,16 +106,15 @@ Jump::Jump(PlayerActor* player)
 	: PlayerState(player, Type::Jump)
 	, mHorizontalSpeed(180.0f)
 {
-	std::vector<Texture2D*> frames = { mPlayer->getSequence()->getTexture("Assets/testPlayerJump.png") };
-	mAnim.frames = frames;
-	mAnim.loop = true;
+	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("jump", "png", 4); // "jump_0.png" から "jump_3.png"
+	mAnim.loop = false;
+	mAnim.fps = 10.0f;
 }
 
 void Jump::enter()
 {
 	PlayerState::enter();
-	// �X�y�[�X��������Ă����Ȃ�W�����v
-	// �����łȂ��Ȃ玩�R����
+	// 自由落下でないなら以下を呼び出す
 	if (IsKeyPressed(KEY_SPACE)) {
 		mPlayer->getPlayerMove()->jump();
 	}
@@ -136,7 +122,7 @@ void Jump::enter()
 
 void Jump::update()
 {
-	// ���������x��ݒ肵������
+	// 水平移動
 	if (IsKeyDown(KEY_D) || IsKeyDown(KEY_A)) {
 		mPlayer->getPlayerMove()->setVelocityX(mHorizontalSpeed);
 	}
@@ -154,9 +140,8 @@ Dodge::Dodge(PlayerActor* player)
 	, mDodgeTimer(0.0f)
 	, mDodgeSpeed(500.0f)
 {
-	std::vector<Texture2D*> frames = { mPlayer->getSequence()->getTexture("Assets/testPlayerDodge.png") };
-	mAnim.frames = frames;
-	mAnim.loop = true;
+	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("dash", "png", 8); // "dash_0.png" から "dash_7.png"
+	mAnim.loop = false;
 }
 
 void Dodge::enter()
@@ -171,12 +156,12 @@ void Dodge::update()
 	mDodgeTimer += GetFrameTime();
 	mDodgeSpeed /= 1.1f;	// ���x����
 	mPlayer->getPlayerMove()->setVelocityX(mDodgeSpeed);
-	// idle��
+	// idleへ
 	if (mDodgeTimer >= mDodgeTime) {
 		mPlayer->changeState(Type::Idle);
 		mDodgeTimer = 0.0f;
 	}
-	// DodgeAttack��
+	// DodgeAttackへ
 	else if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 		mPlayer->changeState(Type::DodgeAttack);
 	}
@@ -195,13 +180,10 @@ Charge::Charge(PlayerActor* player)
 void Charge::input()
 {
 	mChargeTimer += GetFrameTime();
-	// �{�^���𗣂�����
 	if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-		// ���ߍU����
 		if (mChargeTimer > mChargeTime) {
 			mPlayer->changeState(Type::ChargeAttack);
 		}
-		// Idle��
 		else {
 			mPlayer->changeState(Type::Idle);
 		}
@@ -211,7 +193,6 @@ void Charge::input()
 
 void Charge::update()
 {
-	// ������ƈړ���x�����Ă݂�
 	float velX = mPlayer->getPlayerMove()->getVelocityX();
 	mPlayer->getPlayerMove()->setVelocityX(velX / 2);
 }
@@ -221,14 +202,13 @@ NormalAttack::NormalAttack(PlayerActor* player)
 	, mAttackTimer(0.0f)
 	, mAttackTime(0.5f)
 {
-	std::vector<Texture2D*> frames = { mPlayer->getSequence()->getTexture("Assets/testPlayerNormalAttack.png") };
-	mAnim.frames = frames;
+	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("attack", "png", 6); // "attack_0.png" から "attack_5.png"
 	mAnim.loop = false;
 	
 	mAttackInfo.damage = 10.0f;
 	mAttackInfo.duration = mAttackTime;
-	mAttackInfo.colRect.width = 16.0f;
-	mAttackInfo.colRect.height = 16.0f;
+	mAttackInfo.colRect.width = 32.0f;
+	mAttackInfo.colRect.height = 32.0f;
 	computeAttackRectPos(mAttackInfo.colRect);
 	mAttackInfo.knockBack = 200.0f;
 	mAttackInfo.targetType = Actor::Type::Eenemy;
@@ -237,18 +217,15 @@ NormalAttack::NormalAttack(PlayerActor* player)
 
 void NormalAttack::update()
 {
-	// �U���͈͂̈ʒu���X�V����
 	computeAttackRectPos(mAttackInfo.colRect);
-
+	// デバッグ用 残してもいいかも
+	DrawRectangleRec(mAttackInfo.colRect, LIGHTGRAY);
 	mAttackTimer += GetFrameTime();
-	// �U�����Ԃ��߂�����
 	if (mAttackTimer >= mAttackTime) {
 		mAttackTimer = 0.0f;
-		// ���߂�
 		if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
 			mPlayer->changeState(Type::Charge);
 		}
-		// Idle��
 		else {
 			mPlayer->changeState(Type::Idle);
 		}
@@ -268,8 +245,7 @@ DodgeAttack::DodgeAttack(PlayerActor* player)
 	, mAttackTime(0.5f)
 	, mHorizontalSpeed(0.0f)
 {
-	std::vector<Texture2D*> frames = { mPlayer->getSequence()->getTexture("Assets/testPlayerDodgeAttack.png") };
-	mAnim.frames = frames;
+	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("DA", "png", 10); // "DA_0.png" から "DA_9.png"
 	mAnim.loop = false;
 
 	mAttackInfo.damage = 9.0f;
@@ -283,22 +259,17 @@ DodgeAttack::DodgeAttack(PlayerActor* player)
 
 void DodgeAttack::update()
 {
-	// �U���͈͂̈ʒu���X�V����
 	computeAttackRectPos(mAttackInfo.colRect);
 
-	// �v���C���[���x����
 	mHorizontalSpeed /= 1.1f;
 	mPlayer->getPlayerMove()->setVelocityX(mHorizontalSpeed);
 	
 	mAttackTimer += GetFrameTime();
-	// �U�����Ԃ��߂�����
 	if (mAttackTimer >= mAttackTime) {
 		mAttackTimer = 0.0f;
-		// ���߂�
 		if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
 			mPlayer->changeState(Type::Charge);
 		}
-		// Idle��
 		else {
 			mPlayer->changeState(Type::Idle);
 		}
@@ -338,14 +309,11 @@ ChargeAttack::ChargeAttack(PlayerActor* player)
 
 void ChargeAttack::update()
 {
-	// �U���͈͂̈ʒu���X�V����
 	computeAttackRectPos(mAttackInfo.colRect);
 
 	mAttackTimer += GetFrameTime();
-	// �U�����Ԃ��߂�����
 	if (mAttackTimer >= mAttackTime) {
 		mAttackTimer = 0.0f;
-		// Idle��
 		mPlayer->changeState(Type::Idle);
 	}
 }
