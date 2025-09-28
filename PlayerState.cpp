@@ -207,8 +207,8 @@ NormalAttack::NormalAttack(PlayerActor* player)
 	
 	mAttackInfo.damage = 10.0f;
 	mAttackInfo.duration = mAttackTime;
-	mAttackInfo.colRect.width = 32.0f;
-	mAttackInfo.colRect.height = 32.0f;
+	mAttackInfo.colRect.width = 64.0f;
+	mAttackInfo.colRect.height = 64.0f;
 	computeAttackRectPos(mAttackInfo.colRect);
 	mAttackInfo.knockBack = 200.0f;
 	mAttackInfo.targetType = Actor::Type::Eenemy;
@@ -220,6 +220,7 @@ void NormalAttack::update()
 	computeAttackRectPos(mAttackInfo.colRect);
 	// デバッグ用 残してもいいかも
 	DrawRectangleRec(mAttackInfo.colRect, LIGHTGRAY);
+	
 	mAttackTimer += GetFrameTime();
 	if (mAttackTimer >= mAttackTime) {
 		mAttackTimer = 0.0f;

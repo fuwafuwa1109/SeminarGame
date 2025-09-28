@@ -49,7 +49,7 @@ void Stage::loadStage(const char* filename)
     }
 
     // ステージ全体の幅・高さを計算
-    const int tileSize = 32;
+    const int tileSize = 40;
     mStageRecs.clear();
     mStageWidth = (int)tiles[0].size() * tileSize;
     mStageHeight = (int)tiles.size() * tileSize;

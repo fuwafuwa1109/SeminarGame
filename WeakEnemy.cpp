@@ -98,7 +98,7 @@ void WeakEnemy::fixCollision()
                 // 壁にぶつかったときの段差チェック（ジャンプさせる）
                 if (mEnemyState != E_jump)
                 {
-                    const int tileSize = 32;
+                    const int tileSize = 40;
                     bool isStep = false;
                     if (mPosition.x < stageRec.x && mForward > 0 ||
                         mPosition.x > stageRec.x && mForward < 0) {

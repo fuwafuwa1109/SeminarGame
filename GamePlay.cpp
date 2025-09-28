@@ -81,10 +81,15 @@ void GamePlay::input()
 
 void GamePlay::update()
 {
-    mCameraSystem->update();
-
-    // drawに置いた方がきれいだが,諸事情でこっちに持ってきた
+    /* ここでdrawに関する関数を呼ぶのはきれいではないかも */
+    /* デバッグ用にupdate内でもカメラを考慮してdrawしたいのでここに置いた */
+    BeginDrawing();
+    ClearBackground(WHITE);
+    //// カメラに従って描画（ゲーム画面）
     BeginMode2D(mCameraSystem->getCamera());
+
+
+    mCameraSystem->update();
 
     mStage->update();
 
@@ -131,26 +136,19 @@ void GamePlay::update()
 
 void GamePlay::draw()
 {
-    BeginDrawing();
-    ClearBackground(WHITE);
-    //// カメラに従って描画（ゲーム画面）
-    //BeginMode2D(mCameraSystem->getCamera());
-
-    // uiの描画
-    DrawText("GamePlay", 100, 100, 40, BLACK);
-    DrawText("Press ENTER -> GameClear", 100, 200, 20, GRAY);
-    DrawText("Press RightShift -> GameOver", 100, 300, 20, GRAY);
-
-    
     mStage->draw();
 
     for (auto sprite : mSprites)
     {
         sprite->draw();
     }
+    // カメラ考慮の描画を終える
     EndMode2D();
 
     // uiの描画
+    DrawText("GamePlay", 100, 100, 40, BLACK);
+    DrawText("Press ENTER -> GameClear", 100, 200, 20, GRAY);
+    DrawText("Press RightShift -> GameOver", 100, 300, 20, GRAY);
     for (auto ui : mUIStack) {
         ui->draw();
     }

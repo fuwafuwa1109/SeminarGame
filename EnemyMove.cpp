@@ -85,19 +85,19 @@ void EnemyMove::update()
 	mOwner->computeRectangle();
 
 	// 以下デバッグ用
-	switch (mEnemy->getEnemyState())
-	{
-	case WeakEnemy::E_walk: {
-		DrawText("Enemy : walk", 700, 150, 30, BLACK); break;
-	}
-	case WeakEnemy::E_jump: {
+	//switch (mEnemy->getEnemyState())
+	//{
+	//case WeakEnemy::E_walk: {
+	//	DrawText("Enemy : walk", 700, 150, 30, BLACK); break;
+	//}
+	//case WeakEnemy::E_jump: {
 
-		DrawText("Enemy : jump", 700, 150, 30, BLACK); break;
-	}
-	case WeakEnemy::E_attack: {
-		DrawText("Enemy : attack", 700, 150, 30, BLACK); break;
-	}
-	}
+	//	DrawText("Enemy : jump", 700, 150, 30, BLACK); break;
+	//}
+	//case WeakEnemy::E_attack: {
+	//	DrawText("Enemy : attack", 700, 150, 30, BLACK); break;
+	//}
+	//}
 }
 
 void EnemyMove::fixFloorCol()

@@ -1,6 +1,7 @@
 #pragma once
 #include "UIScreen.h"
 #include <raylib.h>
+#include "PlayerState.h"
 
 /// <summary>
 /// HUDの表示を担当するクラス
@@ -17,5 +18,6 @@ public:
 private:
     Rectangle mHpbar;       // hpバーの背景
     Rectangle mCurrentHp;   // 現在のhpを表示する
+    PlayerState::Type mPlayerStateType;
 };
 
