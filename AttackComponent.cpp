@@ -5,6 +5,7 @@
 #include "EnemyActor.h"
 #include "PlayerActor.h"
 #include "Boss.h"
+#include "StageObject.h"
 
 #include "HpComponent.h"
 
@@ -124,6 +125,21 @@ void AttackComponent::processAttackEnemy()
 		// なお、敵が敵に攻撃する事も可能なはず
 		// 自分自身を攻撃したくないなら,componentのownerとは当たらないようにここに書けばいい
 		// ノックバックenter時に敵がstartAttack()を呼べば,敵と敵のノックバック処理も可能だろう
+	}
+
+	// 敵に食らうダメージはオブジェクトにも食らう理屈
+	std::vector<StageObject*> objs =
+		static_cast<GamePlay*>(mOwner->getSequence())->getStageObjs();
+	for (auto obj : objs) {
+		if (obj->getType() == StageObject::Type::Ebreakable) {
+			int i = 1;
+			if (CheckCollisionRecs(obj->getRectangle(), mCurInfo->colRect)) {
+				if (obj->getHpComp()->TakeDamage(mCurInfo->damage)) {
+					obj->setState(Actor::Edead);
+					mActive = false;
+				}
+			}
+		}
 	}
 }
 

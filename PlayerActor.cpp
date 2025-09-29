@@ -13,7 +13,7 @@ PlayerActor::PlayerActor(Sequence* sequence)
 	: Actor(sequence, Actor::Eplayer)
 {
 	mPosition = Vector2{ 100.0f, 200.0f };
-	mScale = 2.0f;
+	mScale = 1.0f;
 	//ハードコーディングしてみた(図形を解析して恐らくこの程度という目視によるハイパーパラメータ)
 	float width = 21.0f * mScale;
 	float height = 35.0f * mScale;
@@ -85,13 +85,8 @@ void PlayerActor::changeState(PlayerState::Type type)
 void PlayerActor::fixCollision()
 {
 	// ステージとの当たり判定
-	for (auto& stageRec : static_cast<GamePlay*>(mSequence)->getStage()->getStageRecs()) {
-		stageCollision(stageRec);
-	}
-	// 破壊可能オブジェクトとの当たり判定
-	for (auto& obj : static_cast<GamePlay*>(mSequence)->getStageObjs()) {
-
-		stageCollision(obj->getRectangle());
+	for (auto& stageObj : static_cast<GamePlay*>(mSequence)->getStageObjs()) {
+		stageCollision(stageObj->getRectangle());
 	}
 
 	// 画面左端との当たり判定

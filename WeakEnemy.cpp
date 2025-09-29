@@ -11,6 +11,7 @@
 #include "PlayerActor.h"
 #include "ArrowActor.h"
 #include "ItemActor.h"
+#include "StageObject.h"
 
 WeakEnemy::WeakEnemy(Sequence* sequence)
 	: EnemyActor(sequence)
@@ -87,7 +88,8 @@ void WeakEnemy::computeAttackRectPos(Rectangle& rec)
 void WeakEnemy::fixCollision()
 {
     // ステージとの当たり判定
-    for (auto& stageRec : static_cast<GamePlay*>(mSequence)->getStage()->getStageRecs()) {
+    for (auto& stageObj : static_cast<GamePlay*>(mSequence)->getStageObjs()) {
+        Rectangle stageRec = stageObj->getRectangle();
         if (CheckCollisionRecs(mRectangle, stageRec)) {
             Rectangle colRec = GetCollisionRec(mRectangle, stageRec);
             // 横方向の衝突
@@ -113,8 +115,8 @@ void WeakEnemy::fixCollision()
                         1.0f
                     };
                     bool isSpaceAboveClear = true;
-                    for (const auto& otherStageRec : static_cast<GamePlay*>(mSequence)->getStage()->getStageRecs()) {
-                        if (CheckCollisionRecs(checkOneAbove, otherStageRec)) {
+                    for (const auto& otherStageObj : static_cast<GamePlay*>(mSequence)->getStageObjs()) {
+                        if (CheckCollisionRecs(checkOneAbove, otherStageObj->getRectangle())) {
                             isSpaceAboveClear = false;
                             break;
                         }

@@ -2,27 +2,49 @@
 #include "Actor.h"
 
 /// <summary>
-/// ステージを構成するオブジェクト
+/// ステージを構成するオブジェクトの基底クラス
 /// </summary>
 class StageObject :
     public Actor
 {
 public:
-    StageObject(class Sequence* sequence);
-    ~StageObject();
+    enum Type
+    {
+        Ehard,
+        Ebreakable
+    };
+    StageObject(class Sequence* sequence, Type type);
+    virtual ~StageObject();
 
-    void update() override;
-    void computeRectangle() override;
     class HpComponent* getHpComp() { return mHpComp; }
+    Type getType() const { return mType; }
 
-private:
+protected:
+    Type mType;
     class SpriteComponent* mSpriteComp;
     class HpComponent* mHpComp;
 };
 
-//class HardObj :
-//    public StageObject
-//{
-//public:
-//    HardObj(class Sequence* sequence)
-//};
+/// <summary>
+/// 床とか壁
+/// 横方向で一つのActorとしてまとめている
+/// </summary>
+class HardObj :
+    public StageObject
+{
+public:
+    HardObj(class Sequence* sequence, int tileNum, Rectangle r);
+    ~HardObj() override;
+
+private:
+    const int mTileNum;    // (横長の)床を構成するタイルの数
+    Texture2D mTexture;    // シーケンスに持たせてもいいが,作って登録する手間は省く
+};
+
+class BreakableObj :
+    public StageObject
+{
+public:
+    BreakableObj(class Sequence* sequence, Rectangle r);
+    void update() override;
+};

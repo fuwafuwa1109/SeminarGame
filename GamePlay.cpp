@@ -136,7 +136,7 @@ void GamePlay::update()
 
 void GamePlay::draw()
 {
-    mStage->draw();
+    //mStage->draw();
 
     for (auto sprite : mSprites)
     {
