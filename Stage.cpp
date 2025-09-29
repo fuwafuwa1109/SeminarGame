@@ -49,8 +49,7 @@ void Stage::loadStage(const char* filename)
     }
 
     // ステージ全体の幅・高さを計算
-    const int tileSize = 32;
-    mStageRecs.clear();
+    const int tileSize = 40;
     mStageWidth = (int)tiles[0].size() * tileSize;
     mStageHeight = (int)tiles.size() * tileSize;
 
@@ -76,7 +75,9 @@ void Stage::loadStage(const char* filename)
                     r.y = (float)y * tileSize;
                     r.width = (float)(x - startX) * tileSize;
                     r.height = (float)tileSize;
-                    mStageRecs.push_back(r);
+
+                    int tileNum = x - startX;
+                    HardObj* obj = new HardObj(mGamePlay, tileNum, r);
                     startX = -1;
                 }
                 // 敵出現位置の場合
@@ -87,10 +88,12 @@ void Stage::loadStage(const char* filename)
                 }
                 else if (tiles[y][x] == 'W')
                 {
-                    StageObject* bo = new StageObject(mGamePlay);
-                    bo->setPosition(Vector2{ (float)x * tileSize + tileSize / 2.0f,
-                        (float)y * tileSize + tileSize / 2.0f });
-                    bo->computeRectangle();
+                    Rectangle r;
+                    r.x = (float)x * tileSize;
+                    r.y = (float)y * tileSize;
+                    r.width = (float)tileSize;
+                    r.height = (float)tileSize;
+                    BreakableObj* bo = new BreakableObj(mGamePlay, r);
                 }
                 else if (tiles[y][x] == 'B')
                 {
@@ -110,7 +113,10 @@ void Stage::loadStage(const char* filename)
             r.y = (float)y * tileSize;
             r.width = (float)(tiles[y].size() - startX) * tileSize;
             r.height = (float)tileSize;
-            mStageRecs.push_back(r);
+
+            int tileNum = tiles[y].size() - startX;
+            HardObj* obj = new HardObj(mGamePlay, tileNum, r);
+            startX = -1;
         }
     }
 }
@@ -145,10 +151,12 @@ void Stage::update()
     }
 }
 
-void Stage::draw()
+std::vector<struct Rectangle> Stage::getStageRecs() const
 {
-    for (auto& rec : mStageRecs)
-    {
-        DrawRectangleRec(rec, GRAY);
+    std::vector<struct Rectangle> ret;
+    std::vector<StageObject*> objs = mGamePlay->getStageObjs();
+    for (int i = 0; i < 5; ++i) {
+        ret[i] = objs[i]->getRectangle();
     }
+    return ret;
 }

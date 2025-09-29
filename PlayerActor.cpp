@@ -12,13 +12,16 @@
 PlayerActor::PlayerActor(Sequence* sequence)
 	: Actor(sequence, Actor::Eplayer)
 {
-	Texture2D* tex  = mSequence->getTexture("testPlayerIdle.png");
 	mPosition = Vector2{ 100.0f, 200.0f };
+	mScale = 2.0f;
+	//ハードコーディングしてみた(図形を解析して恐らくこの程度という目視によるハイパーパラメータ)
+	float width = 21.0f * mScale;
+	float height = 35.0f * mScale;
 	mRectangle = {
-		mPosition.x - tex->width / 2.0f,
-		mPosition.y - tex->height / 2.0f,
-		(float)tex->width,
-		(float)tex->height
+		mPosition.x - width / 2.0f,
+		mPosition.y - width / 2.0f,
+		width,
+		height
 	};
 	mAnimsc = new AnimSpriteComponent(this);
 
@@ -36,7 +39,7 @@ PlayerActor::PlayerActor(Sequence* sequence)
 	mPlayerStates[PlayerState::Type::NormalAttack] = new NormalAttack(this);
 	mPlayerStates[PlayerState::Type::DodgeAttack] = new DodgeAttack(this);
 	mPlayerStates[PlayerState::Type::ChargeAttack] = new ChargeAttack(this);
-	
+
 	mAttackComp = new AttackComponent(this);
 
 	// 現在の状態を設定
@@ -68,10 +71,8 @@ void PlayerActor::update()
 
 void PlayerActor::computeRectangle()
 {
-	mRectangle.x = mPosition.x - mAnimsc->getTexWidth() / 2.0f;
-	mRectangle.y = mPosition.y - mAnimsc->getTexHeight() / 2.0f;
-	mRectangle.width = mAnimsc->getTexWidth();
-	mRectangle.height = mAnimsc->getTexHeight();
+	mRectangle.x = mPosition.x - mRectangle.width / 2.0f;
+	mRectangle.y = mPosition.y - mRectangle.height / 2.0f;
 }
 
 void PlayerActor::changeState(PlayerState::Type type)
@@ -84,13 +85,8 @@ void PlayerActor::changeState(PlayerState::Type type)
 void PlayerActor::fixCollision()
 {
 	// ステージとの当たり判定
-	for (auto& stageRec : static_cast<GamePlay*>(mSequence)->getStage()->getStageRecs()) {
-		stageCollision(stageRec);
-	}
-	// 破壊可能オブジェクトとの当たり判定
-	for (auto& obj: static_cast<GamePlay*>(mSequence)->getStageObjs()) {
-		
-		stageCollision(obj->getRectangle());
+	for (auto& stageObj : static_cast<GamePlay*>(mSequence)->getStageObjs()) {
+		stageCollision(stageObj->getRectangle());
 	}
 
 	// 画面左端との当たり判定
@@ -101,7 +97,7 @@ void PlayerActor::fixCollision()
 	}
 }
 
-void PlayerActor::stageCollision(const Rectangle &stageRec)
+void PlayerActor::stageCollision(const Rectangle& stageRec)
 {
 	// 当たり判定
 	if (CheckCollisionRecs(mRectangle, stageRec)) {

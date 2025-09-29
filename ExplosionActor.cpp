@@ -61,14 +61,14 @@ void ExplosionActor::update()
 		}
 	}
 
-	for (auto& obj : mGamePlay->getStageObjs()) {
-		if (!obj->getHpComp()->isInvincible()) {
-			targetRec = obj->getRectangle();
-			if (CheckCollisionRecs(targetRec, mRectangle)) {
-				obj->getHpComp()->TakeDamage(mDamageAmt);
-			}
-		}
-	}
+	//for (auto& obj : mGamePlay->getStageObjs()) {
+	//	if (!obj->getHpComp()->isInvincible()) {
+	//		targetRec = obj->getRectangle();
+	//		if (CheckCollisionRecs(targetRec, mRectangle)) {
+	//			obj->getHpComp()->TakeDamage(mDamageAmt);
+	//		}
+	//	}
+	//}
 }
 
 void ExplosionActor::computeRectangle()

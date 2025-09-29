@@ -6,11 +6,11 @@
 
 struct AttackInfo
 {
-	float damage;		// �_���[�W��
-	float duration;		// �U���������� �A�j���[�V�����Ƃ͓Ɨ����ĊǗ�����
-	Rectangle colRect;	// �U���͈� �����蔻��p�̋�`
-	float knockBack;	// �m�b�N�o�b�N��
+	float damage;		// ダメージ量
+	float duration;		// 持続
+	Rectangle colRect;	// 攻撃範囲
+	float knockBack;	// ノックバック力
 
-	Actor::Type targetType;   // �U���Ώۂ̎��
+	Actor::Type targetType;   // 攻撃対象
 	DamageTag tag = DamageTag::Normal; 
 };

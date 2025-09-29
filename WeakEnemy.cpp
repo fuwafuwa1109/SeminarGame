@@ -11,14 +11,19 @@
 #include "PlayerActor.h"
 #include "ArrowActor.h"
 #include "ItemActor.h"
+#include "StageObject.h"
 
 WeakEnemy::WeakEnemy(Sequence* sequence)
 	: EnemyActor(sequence)
     , mEnemyState(E_walk)
 {
+    mScale = 2.0f;
     mEnemyMove = new EnemyMove(this);
     mEnemyMove->setMoveSpped(32.0f);
 	mAnimsc = new AnimSpriteComponent(this);
+
+    mRectangle.width = 21.0f * mScale;
+    mRectangle.height = 35.0f * mScale;
 }
 
 void WeakEnemy::changeState(EnemyState nextState)
@@ -29,10 +34,8 @@ void WeakEnemy::changeState(EnemyState nextState)
 
 void WeakEnemy::computeRectangle()
 {
-	mRectangle.x = mPosition.x - mAnimsc->getTexWidth() / 2.0f;
-	mRectangle.y = mPosition.y - mAnimsc->getTexHeight() / 2.0f;
-    mRectangle.width = (float)mAnimsc->getTexWidth();
-    mRectangle.height = (float)mAnimsc->getTexHeight();
+    mRectangle.x = mPosition.x - mRectangle.width / 2.0f;
+    mRectangle.y = mPosition.y - mRectangle.height / 2.0f;
 }
 
 void WeakEnemy::onEnterState(EnemyState nextState)
@@ -87,7 +90,8 @@ void WeakEnemy::computeAttackRectPos(Rectangle& rec)
 void WeakEnemy::fixCollision()
 {
     // ステージとの当たり判定
-    for (auto& stageRec : static_cast<GamePlay*>(mSequence)->getStage()->getStageRecs()) {
+    for (auto& stageObj : static_cast<GamePlay*>(mSequence)->getStageObjs()) {
+        Rectangle stageRec = stageObj->getRectangle();
         if (CheckCollisionRecs(mRectangle, stageRec)) {
             Rectangle colRec = GetCollisionRec(mRectangle, stageRec);
             // 横方向の衝突
@@ -98,7 +102,7 @@ void WeakEnemy::fixCollision()
                 // 壁にぶつかったときの段差チェック（ジャンプさせる）
                 if (mEnemyState != E_jump)
                 {
-                    const int tileSize = 32;
+                    const int tileSize = 40;
                     bool isStep = false;
                     if (mPosition.x < stageRec.x && mForward > 0 ||
                         mPosition.x > stageRec.x && mForward < 0) {
@@ -113,8 +117,8 @@ void WeakEnemy::fixCollision()
                         1.0f
                     };
                     bool isSpaceAboveClear = true;
-                    for (const auto& otherStageRec : static_cast<GamePlay*>(mSequence)->getStage()->getStageRecs()) {
-                        if (CheckCollisionRecs(checkOneAbove, otherStageRec)) {
+                    for (const auto& otherStageObj : static_cast<GamePlay*>(mSequence)->getStageObjs()) {
+                        if (CheckCollisionRecs(checkOneAbove, otherStageObj->getRectangle())) {
                             isSpaceAboveClear = false;
                             break;
                         }
@@ -158,16 +162,18 @@ MeleeEnemy::MeleeEnemy(Sequence* sequence)
     std::vector<Texture2D*> frames;
 	// Walk
 	frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
-	mAnimations[E_walk].frames = frames;
-	mAnimations[E_walk].loop = true;
-	// attack
-	frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
-	mAnimations[E_attack].frames = frames;
-	mAnimations[E_attack].loop = false;
-	// jump
-	frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
-	mAnimations[E_jump].frames = frames;
-	mAnimations[E_jump].loop = false;
+    // Walk
+    //frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
+    mAnimations[E_walk].frames = mSequence->getAnimationFrames("enemy", "dash", "png", 6);
+    mAnimations[E_walk].loop = true;
+    // attack
+    //frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
+    mAnimations[E_attack].frames = mSequence->getAnimationFrames("enemy", "idle", "png", 5);
+    mAnimations[E_attack].loop = false;
+    // jump
+    frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
+    mAnimations[E_jump].frames = mSequence->getAnimationFrames("enemy", "idle", "png", 5);
+    mAnimations[E_jump].loop = false;
 
     // 攻撃は近接
     mAttackComp = new AttackComponent(this);
@@ -217,15 +223,15 @@ RangedEnemy::RangedEnemy(Sequence* sequence)
 
     // Walk
     frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
-    mAnimations[E_walk].frames = frames;
+    mAnimations[E_walk].frames = mSequence->getAnimationFrames("enemy", "dash", "png", 6);
     mAnimations[E_walk].loop = true;
     // attack
     frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
-    mAnimations[E_attack].frames = frames;
+    mAnimations[E_attack].frames = mSequence->getAnimationFrames("enemy", "idle", "png", 5);
     mAnimations[E_attack].loop = false;
     // jump
     frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
-    mAnimations[E_jump].frames = frames;
+    mAnimations[E_jump].frames = mSequence->getAnimationFrames("enemy", "idle", "png", 5);
     mAnimations[E_jump].loop = false;
 
     mEnemyMove->setAttackRange(400.0f);

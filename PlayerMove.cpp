@@ -47,8 +47,6 @@ void PlayerMove::update()
 		mPlayer->getPlayerState()->getType() != PlayerState::Type::DodgeAttack) {
 		mVelocityX = 0.0f;
 	}
-
-	StateDraw();
 }
 
 // GamePlay‚ÅŒÄ‚ÔB°‚Æ‚ÌÕ“Ë‰ðÁ‚ÉŽg‚í‚ê‚éB
@@ -72,40 +70,4 @@ void PlayerMove::fixCeilingCol()
 void PlayerMove::jump()
 {
 	mVelocityY = mJumpSpeed;
-}
-
-void PlayerMove::StateDraw()
-{
-	// MoveState
-	switch (mPlayer->getPlayerState()->getType())
-	{
-	case PlayerState::Type::Idle: {
-		DrawText("Player : Idle", 700, 50, 30, BLACK); break;
-	}
-	case PlayerState::Type::Walk: {
-
-		DrawText("Player : Walk", 700, 50, 30, BLACK); break;
-	}
-	case PlayerState::Type::Jump: {
-		DrawText("Player : Jump", 700, 50, 30, BLACK); break;
-	}
-	case PlayerState::Type::Dodge: {
-		DrawText("Player : Dodge", 700, 50, 30, BLACK); break;
-	}
-	case PlayerState::Type::Guard: {
-		DrawText("Player : Guard", 700, 50, 30, BLACK); break;
-	}
-	case PlayerState::Type::Charge: {
-		DrawText("Player : Charge", 700, 50, 30, BLACK); break;
-	}
-	case PlayerState::Type::NormalAttack: {
-		DrawText("Player : nAttack", 700, 50, 30, BLACK); break;
-	}
-	case PlayerState::Type::DodgeAttack: {
-		DrawText("Player : dAttack", 700, 50, 30, BLACK); break;
-	}
-	case PlayerState::Type::ChargeAttack: {
-		DrawText("Player : cAttack", 700, 50, 30, BLACK); break;
-	}
-	}
 }
