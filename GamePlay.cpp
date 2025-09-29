@@ -132,6 +132,13 @@ void GamePlay::update()
             ++iter;
         }
     }
+
+    // playerが死んだら次のシーケンスを設定(とりあえずここに書く)
+    if (mPlayer) {
+        if (mPlayer->getHpComp()->IsKilled()) {
+            mNext = mNext = new GameOver();
+        }
+    }
 }
 
 void GamePlay::draw()

@@ -17,9 +17,13 @@ WeakEnemy::WeakEnemy(Sequence* sequence)
 	: EnemyActor(sequence)
     , mEnemyState(E_walk)
 {
+    mScale = 2.0f;
     mEnemyMove = new EnemyMove(this);
     mEnemyMove->setMoveSpped(32.0f);
 	mAnimsc = new AnimSpriteComponent(this);
+
+    mRectangle.width = 21.0f * mScale;
+    mRectangle.height = 35.0f * mScale;
 }
 
 void WeakEnemy::changeState(EnemyState nextState)
@@ -30,10 +34,8 @@ void WeakEnemy::changeState(EnemyState nextState)
 
 void WeakEnemy::computeRectangle()
 {
-	mRectangle.x = mPosition.x - mAnimsc->getTexWidth() / 2.0f;
-	mRectangle.y = mPosition.y - mAnimsc->getTexHeight() / 2.0f;
-    mRectangle.width = (float)mAnimsc->getTexWidth();
-    mRectangle.height = (float)mAnimsc->getTexHeight();
+    mRectangle.x = mPosition.x - mRectangle.width / 2.0f;
+    mRectangle.y = mPosition.y - mRectangle.height / 2.0f;
 }
 
 void WeakEnemy::onEnterState(EnemyState nextState)
@@ -160,16 +162,18 @@ MeleeEnemy::MeleeEnemy(Sequence* sequence)
     std::vector<Texture2D*> frames;
 	// Walk
 	frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
-	mAnimations[E_walk].frames = frames;
-	mAnimations[E_walk].loop = true;
-	// attack
-	frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
-	mAnimations[E_attack].frames = frames;
-	mAnimations[E_attack].loop = false;
-	// jump
-	frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
-	mAnimations[E_jump].frames = frames;
-	mAnimations[E_jump].loop = false;
+    // Walk
+    //frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
+    mAnimations[E_walk].frames = mSequence->getAnimationFrames("enemy", "dash", "png", 6);
+    mAnimations[E_walk].loop = true;
+    // attack
+    //frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
+    mAnimations[E_attack].frames = mSequence->getAnimationFrames("enemy", "idle", "png", 5);
+    mAnimations[E_attack].loop = false;
+    // jump
+    frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
+    mAnimations[E_jump].frames = mSequence->getAnimationFrames("enemy", "idle", "png", 5);
+    mAnimations[E_jump].loop = false;
 
     // UŒ‚‚Í‹ßÚ
     mAttackComp = new AttackComponent(this);
@@ -219,15 +223,15 @@ RangedEnemy::RangedEnemy(Sequence* sequence)
 
     // Walk
     frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
-    mAnimations[E_walk].frames = frames;
+    mAnimations[E_walk].frames = mSequence->getAnimationFrames("enemy", "dash", "png", 6);
     mAnimations[E_walk].loop = true;
     // attack
     frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
-    mAnimations[E_attack].frames = frames;
+    mAnimations[E_attack].frames = mSequence->getAnimationFrames("enemy", "idle", "png", 5);
     mAnimations[E_attack].loop = false;
     // jump
     frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
-    mAnimations[E_jump].frames = frames;
+    mAnimations[E_jump].frames = mSequence->getAnimationFrames("enemy", "idle", "png", 5);
     mAnimations[E_jump].loop = false;
 
     mEnemyMove->setAttackRange(400.0f);

@@ -13,7 +13,7 @@ PlayerActor::PlayerActor(Sequence* sequence)
 	: Actor(sequence, Actor::Eplayer)
 {
 	mPosition = Vector2{ 100.0f, 200.0f };
-	mScale = 1.0f;
+	mScale = 2.0f;
 	//ハードコーディングしてみた(図形を解析して恐らくこの程度という目視によるハイパーパラメータ)
 	float width = 21.0f * mScale;
 	float height = 35.0f * mScale;

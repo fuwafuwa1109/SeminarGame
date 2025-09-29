@@ -32,7 +32,7 @@ Idle::Idle(PlayerActor* player)
 	, mLastPressedTimeD(0.0)
 	, mDoubleTapWindow(0.2)
 {
-	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("idle", "png", 5); // "idle_0.png" から "idle_4.png" 
+	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("player", "idle", "png", 5); // "idle_0.png" から "idle_4.png" 
 	mAnim.loop = true;
 }
 
@@ -69,9 +69,9 @@ void Idle::enter()
 
 Walk::Walk(PlayerActor* player)
 	: PlayerState(player, Type::Walk)
-	, mWalkSpeed(180.0f)
+	, mWalkSpeed(500.0f)
 {
-	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("walk", "png", 9); // "walk_0.png" から "walk_9.png"
+	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("player", "walk", "png", 9); // "walk_0.png" から "walk_9.png"
 	mAnim.loop = true;
 }
 
@@ -104,9 +104,9 @@ void Walk::update()
 
 Jump::Jump(PlayerActor* player)
 	: PlayerState(player, Type::Jump)
-	, mHorizontalSpeed(180.0f)
+	, mHorizontalSpeed(500.0f)
 {
-	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("jump", "png", 4); // "jump_0.png" から "jump_3.png"
+	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("player", "jump", "png", 4); // "jump_0.png" から "jump_3.png"
 	mAnim.loop = false;
 	mAnim.fps = 10.0f;
 }
@@ -140,7 +140,7 @@ Dodge::Dodge(PlayerActor* player)
 	, mDodgeTimer(0.0f)
 	, mDodgeSpeed(500.0f)
 {
-	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("dash", "png", 8); // "dash_0.png" から "dash_7.png"
+	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("player", "dash", "png", 8); // "dash_0.png" から "dash_7.png"
 	mAnim.loop = false;
 }
 
@@ -202,7 +202,7 @@ NormalAttack::NormalAttack(PlayerActor* player)
 	, mAttackTimer(0.0f)
 	, mAttackTime(0.5f)
 {
-	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("attack", "png", 6); // "attack_0.png" から "attack_5.png"
+	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("player", "attack", "png", 6); // "attack_0.png" から "attack_5.png"
 	mAnim.loop = false;
 	
 	mAttackInfo.damage = 10.0f;
@@ -246,7 +246,7 @@ DodgeAttack::DodgeAttack(PlayerActor* player)
 	, mAttackTime(0.5f)
 	, mHorizontalSpeed(0.0f)
 {
-	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("DA", "png", 10); // "DA_0.png" から "DA_9.png"
+	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("player", "DA", "png", 10); // "DA_0.png" から "DA_9.png"
 	mAnim.loop = false;
 
 	mAttackInfo.damage = 9.0f;
