@@ -63,7 +63,7 @@ BreakableObj::BreakableObj(Sequence* sequence, Rectangle r)
 	mSpriteComp = new SpriteComponent(this);
 	mSpriteComp->setTexture(*tex);
 	
-	mHpComp = new HpComponent(this, 20.0f);
+	mHpComp = new HpComponent(this, 20.0f, 0.0f);
 }
 
 void BreakableObj::update()

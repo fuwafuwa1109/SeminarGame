@@ -93,6 +93,7 @@ class Dodge
 {
 public:
     Dodge(PlayerActor* player);
+    void input() override;
     void update() override;
     void enter() override;
 private:
