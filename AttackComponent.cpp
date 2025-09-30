@@ -37,28 +37,28 @@ void AttackComponent::update()
 			processAttackPlayer();
 			break;
 		}
-		//kb move
-		for (int i = mKnockbackTargets.size() - 1; i >= 0; --i) {
-			auto& info = mKnockbackTargets[i];
+	}
+	//kb move
+	for (int i = mKnockbackTargets.size() - 1; i >= 0; --i) {
+		auto& info = mKnockbackTargets[i];
 
-			//ターゲットが有効かチェック
-			if (info.target->getState() == Actor::Edead) {
-				mKnockbackTargets.erase(mKnockbackTargets.begin() + i);
-				continue;
-			}
-			info.timer -= GetFrameTime();
+		//ターゲットが有効かチェック
+		if (info.target->getState() == Actor::Edead) {
+			mKnockbackTargets.erase(mKnockbackTargets.begin() + i);
+			continue;
+		}
+		info.timer -= GetFrameTime();
 
-			if (info.timer <= 0.0f) {
-				mKnockbackTargets.erase(mKnockbackTargets.begin() + i);
-			}
-			else {
-				Vector2 currentPos = info.target->getPosition();
-				Vector2 moveAmount = Vector2Scale(info.velocity, GetFrameTime());
-				Vector2 newPos = Vector2Add(currentPos, moveAmount);
+		if (info.timer <= 0.0f) {
+			mKnockbackTargets.erase(mKnockbackTargets.begin() + i);
+		}
+		else {
+			Vector2 currentPos = info.target->getPosition();
+			Vector2 moveAmount = Vector2Scale(info.velocity, GetFrameTime());
+			Vector2 newPos = Vector2Add(currentPos, moveAmount);
 
-				info.target->setPosition(newPos);
-				info.target->computeRectangle();
-			}
+			info.target->setPosition(newPos);
+			info.target->computeRectangle();
 		}
 	}
 }
@@ -106,7 +106,7 @@ void AttackComponent::processAttackEnemy()
 			KnockbackInfo info;
 			info.target = enemy; //Knockback構造体のtargetにenemyを設定
 			info.timer = 0.2f;
-			float speed = 300.0f;
+			float speed = mCurInfo->knockBack;
 			info.velocity = Vector2Scale(direction, speed);
 
 			mKnockbackTargets.push_back(info);
@@ -136,8 +136,8 @@ void AttackComponent::processAttackEnemy()
 			if (CheckCollisionRecs(obj->getRectangle(), mCurInfo->colRect)) {
 				if (obj->getHpComp()->TakeDamage(mCurInfo->damage)) {
 					obj->setState(Actor::Edead);
-					mActive = false;
 				}
+				mActive = false;
 			}
 		}
 	}

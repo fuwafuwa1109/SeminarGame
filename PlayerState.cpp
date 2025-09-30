@@ -220,7 +220,7 @@ NormalAttack::NormalAttack(PlayerActor* player)
 	mAttackInfo.colRect.width = 64.0f;
 	mAttackInfo.colRect.height = 64.0f;
 	computeAttackRectPos(mAttackInfo.colRect);
-	mAttackInfo.knockBack = 200.0f;
+	mAttackInfo.knockBack = 600.0f;
 	mAttackInfo.targetType = Actor::Type::Eenemy;
 	mAttackInfo.tag = DamageTag::MeleeLight;   // ★ 追加：軽攻撃
 }
@@ -264,7 +264,7 @@ DodgeAttack::DodgeAttack(PlayerActor* player)
 	mAttackInfo.colRect.width = 64.0f;
 	mAttackInfo.colRect.height = 64.0f;
 	computeAttackRectPos(mAttackInfo.colRect);
-	mAttackInfo.knockBack = 200.0f;
+	mAttackInfo.knockBack = 600.0f;
 	mAttackInfo.targetType = Actor::Type::Eenemy;
 }
 
@@ -315,7 +315,7 @@ ChargeAttack::ChargeAttack(PlayerActor* player)
 	mAttackInfo.colRect.width = 80.0f;
 	mAttackInfo.colRect.height = 70.0f;
 	computeAttackRectPos(mAttackInfo.colRect);
-	mAttackInfo.knockBack = 200.0f;
+	mAttackInfo.knockBack = 1000.0f;
 	mAttackInfo.targetType = Actor::Type::Eenemy;
 	mAttackInfo.tag = DamageTag::MeleeHeavy;   // ★ 追加：重攻撃
 }
