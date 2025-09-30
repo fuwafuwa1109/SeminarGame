@@ -204,7 +204,7 @@ void MeleeEnemy::update()
         }
     }
     // “–‚½‚è”»’è•\Ž¦
-    DrawRectangleRec(mRectangle, LIGHTGRAY);
+    DrawRectangleRec(mRectangle, WHITE);
 }
 
 void MeleeEnemy::attack()
@@ -252,7 +252,7 @@ void RangedEnemy::update()
         }
     }
     // “–‚½‚è”»’è•\Ž¦
-    DrawRectangleRec(mRectangle, LIGHTGRAY);
+    DrawRectangleRec(mRectangle, WHITE);
 }
 
 void RangedEnemy::onEnterState(EnemyState nextState)

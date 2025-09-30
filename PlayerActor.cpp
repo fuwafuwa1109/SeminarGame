@@ -69,7 +69,7 @@ void PlayerActor::update()
 	fixCollision();
 
 	// “–‚½‚è”»’è•\Ž¦
-	DrawRectangleRec(mRectangle, LIGHTGRAY);
+	DrawRectangleRec(mRectangle, WHITE);
 }
 
 void PlayerActor::computeRectangle()

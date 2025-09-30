@@ -180,7 +180,7 @@ void Dodge::update()
 Charge::Charge(PlayerActor* player)
 	: PlayerState(player, Type::Charge)
 	, mChargeTimer(0.0f)
-	, mChargeTime(1.0f)
+	, mChargeTime(0.2f)
 {
 	std::vector<Texture2D*> frames = { mPlayer->getSequence()->getTexture("Assets/testPlayerCharge.png") };
 	mAnim.frames = frames;
@@ -312,8 +312,8 @@ ChargeAttack::ChargeAttack(PlayerActor* player)
 
 	mAttackInfo.damage = 12.0f;
 	mAttackInfo.duration = mAttackTime;
-	mAttackInfo.colRect.width = 16.0f;
-	mAttackInfo.colRect.height = 16.0f;
+	mAttackInfo.colRect.width = 80.0f;
+	mAttackInfo.colRect.height = 70.0f;
 	computeAttackRectPos(mAttackInfo.colRect);
 	mAttackInfo.knockBack = 200.0f;
 	mAttackInfo.targetType = Actor::Type::Eenemy;
@@ -323,6 +323,8 @@ ChargeAttack::ChargeAttack(PlayerActor* player)
 void ChargeAttack::update()
 {
 	computeAttackRectPos(mAttackInfo.colRect);
+	// 当たり判定表示
+	DrawRectangleRec(mAttackInfo.colRect, LIGHTGRAY);
 
 	mAttackTimer += GetFrameTime();
 	if (mAttackTimer >= mAttackTime) {
