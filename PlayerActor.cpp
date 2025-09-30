@@ -67,6 +67,9 @@ void PlayerActor::update()
 	mPlayerState->update();
 
 	fixCollision();
+
+	// “–‚½‚è”»’è•\Ž¦
+	DrawRectangleRec(mRectangle, WHITE);
 }
 
 void PlayerActor::computeRectangle()

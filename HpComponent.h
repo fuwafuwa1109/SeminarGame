@@ -32,6 +32,8 @@ public:
     float GetHpRatio() const { return mCurHp / mMaxHp; }
     // Å‘åHp‘‚â‚·
     void AddMaxHp(float add);
+    // –³“GŠÔİ’è
+    void SetInvincibleDuration(float duration) { mInvincibleDuration = duration; }
 
 private:
     float mCurHp;   // Œ»İHp

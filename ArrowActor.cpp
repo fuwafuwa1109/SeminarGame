@@ -84,6 +84,9 @@ void ArrowActor::update()
         // 必要ならここで「消滅演出」や「当たり無効化」を入れる
         // （メモリ破棄はプロジェクトのActor管理方針に合わせて）
     }
+
+    // 当たり判定表示
+    DrawRectangleRec(mRectangle, LIGHTGRAY);
 }
 
 void ArrowActor::onStartAttack()

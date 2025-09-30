@@ -21,6 +21,7 @@ WeakEnemy::WeakEnemy(Sequence* sequence)
     mEnemyMove = new EnemyMove(this);
     mEnemyMove->setMoveSpped(32.0f);
 	mAnimsc = new AnimSpriteComponent(this);
+    mHpComp->SetInvincibleDuration(0.0f);
 
     mRectangle.width = 21.0f * mScale;
     mRectangle.height = 35.0f * mScale;
@@ -202,6 +203,8 @@ void MeleeEnemy::update()
             item->computeRectangle();
         }
     }
+    // “–‚½‚è”»’è•\Ž¦
+    DrawRectangleRec(mRectangle, WHITE);
 }
 
 void MeleeEnemy::attack()
@@ -248,6 +251,8 @@ void RangedEnemy::update()
             item->computeRectangle();
         }
     }
+    // “–‚½‚è”»’è•\Ž¦
+    DrawRectangleRec(mRectangle, WHITE);
 }
 
 void RangedEnemy::onEnterState(EnemyState nextState)

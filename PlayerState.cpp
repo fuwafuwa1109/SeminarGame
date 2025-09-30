@@ -136,26 +136,36 @@ Guard::Guard(PlayerActor* player)
 
 Dodge::Dodge(PlayerActor* player)
 	: PlayerState(player, Type::Dodge)
-	, mDodgeTime(0.3f)
+	, mDodgeTime(0.6f)
 	, mDodgeTimer(0.0f)
-	, mDodgeSpeed(500.0f)
+	, mDodgeSpeed(1000.0f)
 {
-	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("player", "dash", "png", 8); // "dash_0.png" から "dash_7.png"
+	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("player", "dash", "png", 5); // "dash_0.png" から "dash_4.png"
 	mAnim.loop = false;
+	mAnim.fps = 10.0f;
+}
+
+void Dodge::input()
+{
+	// Jump
+	if (IsKeyPressed(KEY_SPACE)) {
+		mPlayer->changeState(Type::Jump);
+	}
 }
 
 void Dodge::enter()
 {
 	PlayerState::enter();
-	mDodgeSpeed = 500.0f;
+	mDodgeSpeed = 1000.0f;
 	mPlayer->getPlayerMove()->setVelocityX(mDodgeSpeed);
 }
 
 void Dodge::update()
 {
 	mDodgeTimer += GetFrameTime();
-	mDodgeSpeed /= 1.1f;	// ���x����
+	mDodgeSpeed /= 1.1f;	// 減衰
 	mPlayer->getPlayerMove()->setVelocityX(mDodgeSpeed);
+
 	// idleへ
 	if (mDodgeTimer >= mDodgeTime) {
 		mPlayer->changeState(Type::Idle);
@@ -170,7 +180,7 @@ void Dodge::update()
 Charge::Charge(PlayerActor* player)
 	: PlayerState(player, Type::Charge)
 	, mChargeTimer(0.0f)
-	, mChargeTime(1.0f)
+	, mChargeTime(0.2f)
 {
 	std::vector<Texture2D*> frames = { mPlayer->getSequence()->getTexture("Assets/testPlayerCharge.png") };
 	mAnim.frames = frames;
@@ -200,7 +210,7 @@ void Charge::update()
 NormalAttack::NormalAttack(PlayerActor* player)
 	: PlayerState(player, Type::NormalAttack)
 	, mAttackTimer(0.0f)
-	, mAttackTime(0.5f)
+	, mAttackTime(0.3f)
 {
 	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("player", "attack", "png", 6); // "attack_0.png" から "attack_5.png"
 	mAnim.loop = false;
@@ -218,7 +228,7 @@ NormalAttack::NormalAttack(PlayerActor* player)
 void NormalAttack::update()
 {
 	computeAttackRectPos(mAttackInfo.colRect);
-	// デバッグ用 残してもいいかも
+	// 当たり判定表示
 	DrawRectangleRec(mAttackInfo.colRect, LIGHTGRAY);
 	
 	mAttackTimer += GetFrameTime();
@@ -251,8 +261,8 @@ DodgeAttack::DodgeAttack(PlayerActor* player)
 
 	mAttackInfo.damage = 9.0f;
 	mAttackInfo.duration = mAttackTime;
-	mAttackInfo.colRect.width = 16.0f;
-	mAttackInfo.colRect.height = 16.0f;
+	mAttackInfo.colRect.width = 64.0f;
+	mAttackInfo.colRect.height = 64.0f;
 	computeAttackRectPos(mAttackInfo.colRect);
 	mAttackInfo.knockBack = 200.0f;
 	mAttackInfo.targetType = Actor::Type::Eenemy;
@@ -261,6 +271,8 @@ DodgeAttack::DodgeAttack(PlayerActor* player)
 void DodgeAttack::update()
 {
 	computeAttackRectPos(mAttackInfo.colRect);
+	// 当たり判定表示
+	DrawRectangleRec(mAttackInfo.colRect, LIGHTGRAY);
 
 	mHorizontalSpeed /= 1.1f;
 	mPlayer->getPlayerMove()->setVelocityX(mHorizontalSpeed);
@@ -300,8 +312,8 @@ ChargeAttack::ChargeAttack(PlayerActor* player)
 
 	mAttackInfo.damage = 12.0f;
 	mAttackInfo.duration = mAttackTime;
-	mAttackInfo.colRect.width = 16.0f;
-	mAttackInfo.colRect.height = 16.0f;
+	mAttackInfo.colRect.width = 80.0f;
+	mAttackInfo.colRect.height = 70.0f;
 	computeAttackRectPos(mAttackInfo.colRect);
 	mAttackInfo.knockBack = 200.0f;
 	mAttackInfo.targetType = Actor::Type::Eenemy;
@@ -311,6 +323,8 @@ ChargeAttack::ChargeAttack(PlayerActor* player)
 void ChargeAttack::update()
 {
 	computeAttackRectPos(mAttackInfo.colRect);
+	// 当たり判定表示
+	DrawRectangleRec(mAttackInfo.colRect, LIGHTGRAY);
 
 	mAttackTimer += GetFrameTime();
 	if (mAttackTimer >= mAttackTime) {

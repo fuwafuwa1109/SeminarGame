@@ -84,7 +84,7 @@ void GamePlay::update()
     /* ここでdrawに関する関数を呼ぶのはきれいではないかも */
     /* デバッグ用にupdate内でもカメラを考慮してdrawしたいのでここに置いた */
     BeginDrawing();
-    ClearBackground(WHITE);
+    ClearBackground(SKYBLUE);
     //// カメラに従って描画（ゲーム画面）
     BeginMode2D(mCameraSystem->getCamera());
 

@@ -118,8 +118,8 @@ void AttackComponent::processAttackEnemy()
 			}
 			else if (enemy->getHpComp()->TakeDamage(mCurInfo->damage)) {
 				enemy->setState(Actor::Edead);
-				mActive = false;
 			}		
+			mActive = false;
 		}
 
 		// なお、敵が敵に攻撃する事も可能なはず
@@ -147,7 +147,10 @@ void AttackComponent::processAttackPlayer()
 {
 	PlayerActor* player = static_cast<GamePlay*>(mOwner->getSequence())->getPlayer();
 
-	if (player->getHpComp()->isInvincible()) {
+	// 無敵or回避ならダメージは与えない
+	if (player->getHpComp()->isInvincible() ||
+		player->getPlayerState()->getType() == PlayerState::Type::Dodge ||
+		player->getPlayerState()->getType() == PlayerState::Type::DodgeAttack) {
 		return;
 	}
 	// ダメージ与える
