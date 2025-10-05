@@ -238,6 +238,7 @@ RangedEnemy::RangedEnemy(Sequence* sequence)
     mAnimations[E_jump].loop = false;
 
     mEnemyMove->setAttackRange(400.0f);
+    mEnemyMove->setAttackTime(3.0f);
 }
 
 void RangedEnemy::update()

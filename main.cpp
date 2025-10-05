@@ -63,6 +63,4 @@ void LoadSounds()
 {
 	SoundSystem& s = SoundSystem::instance();
 	s.loadBGM("stageBGM", "Assets/uchinari_138.mp3");
-
-
 }
