@@ -1,11 +1,7 @@
 #pragma once
 //===============================================
 // Boss.h
-//  最奥に鎮座するボス本体。
-//  ・ガードゲージ（GuardComponent）
-//  ・近接：軽/重／遠距離：投擲/ビーム の4攻撃
-//  ・時間経過で雑魚召喚 → 自滅でボス回復
-//  ・HPが 1/2・1/4 を下回るとガード全回復
+//  最奥に鎮座するボス本体。ガード/4攻撃/召喚を実装。
 //===============================================
 #include "EnemyActor.h"
 #include "DamageTags.h"
@@ -16,46 +12,42 @@ class GamePlay;
 
 class Boss : public EnemyActor {
 public:
-    explicit Boss(GamePlay* sequence);
+    
+    HpComponent*    getHpComp() const { return mHpComp; }
+    GuardComponent* getGuardComp() const { return mGuard; }
+explicit Boss(GamePlay* seq);
+    void update() override;
 
-    void update() override;           // 思考・攻撃・召喚など
-    void computeRectangle() override; // 当たり矩形（スプライトに合わせて調整推奨）
+    const Rectangle& getRectangle() const override { return mRectangle; }
+    void computeRectangle() override;
 
-    // ダメージ適用（AttackComponent/ExplosionActor から呼ばれる想定）
+
+    // ダメージ適用（武器側から呼ばれる想定）
     void ApplyDamage(float dmg, DamageTag tag);
 
-    // 召喚雑魚の自滅で呼ぶ回復
+    // ミニオン自滅時の回復
     void Heal(float hp);
 
-    GuardComponent* getGuard() const { return mGuard; }
-    HpComponent*    getHp()    const { return mHpComp; }
-
 private:
-    // 攻撃ハンドラ（実際の発生体は AttackComponent/Projectile など）
-    void doMeleeLight();
-    void doMeleeHeavy();
-    void doLobProjectile();
-    void doBeam();
-
-    // 召喚とガード再生
-    void trySummon(float dt);
     void tryGuardRecharge();
+    void tryAttacks(float dt);
+    void trySummon(float dt);
 
-private:
-    GuardComponent* mGuard = nullptr; // ボスのガード
-    class BossMove* mMove = nullptr; // ボスの移動
+    // コンポーネント
+    GuardComponent* mGuard = nullptr;
+    HpComponent*    mHpComp = nullptr;
 
-    // 攻撃クールダウン（0以下で使用可能）
+    // 攻撃CD
     float mMeleeLightCd = 0.0f;
     float mMeleeHeavyCd = 0.0f;
     float mLobCd        = 0.0f;
     float mBeamCd       = 0.0f;
 
-    // 召喚タイマ
+    // 召喚
     float mSummonTimer    = 0.0f;
-    float mSummonInterval = 8.0f; // 8秒ごとに召喚
+    float mSummonInterval = 8.0f;
 
-    // ガード再生が既に実行済みかのフラグ
-    bool mDidHalfRecharge    = false; // HP<=50% で一度だけ
-    bool mDidQuarterRecharge = false; // HP<=25% で一度だけ
+    // ガード再生フラグ
+    bool mDidHalfRecharge    = false;
+    bool mDidQuarterRecharge = false;
 };

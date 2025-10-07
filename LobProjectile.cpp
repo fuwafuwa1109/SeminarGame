@@ -5,6 +5,9 @@
 #include "GamePlay.h"
 #include "PlayerActor.h"
 #include "HpComponent.h"     // TakeDamage() 呼び出しのために必要
+#include "SpriteComponent.h"
+#include <cmath>
+
 
 LobProjectileActor::LobProjectileActor(GamePlay* seq, Vector2 pos, int forward)
     : Actor(seq, Actor::Eweapon)
@@ -13,20 +16,31 @@ LobProjectileActor::LobProjectileActor(GamePlay* seq, Vector2 pos, int forward)
 {
     // 位置と初速
     setPosition(pos);
-    mVel      = { 250.0f * (float)forward, -380.0f };  // 横に 250、上向きに 380
+    mVelocity      = { 250.0f * (float)forward, -380.0f };  // 横に 250、上向きに 380
     mForward  = forward;
+
+    // ★ 見た目：存在する矢テクスチャ（testArrow.png を優先）
+    Texture2D* tex = mGP->getTexture("Assets/testArrow.png");
+    if (!tex) tex = mGP->getTexture("Assets/arrow.png");
+    if (tex) {
+        mSprite = new SpriteComponent(this);
+        mSprite->setTexture(*tex);
+        // 回転APIが無いのでここは何もしない
+    }
 }
 
 void LobProjectileActor::update() {
     const float dt = GetFrameTime();
 
-    // 簡易重力
-    mVel.y     += 980.0f * dt;
-    mPosition.x = mPosition.x + mVel.x * dt;
-    mPosition.y = mPosition.y + mVel.y * dt;
+    // 重力＆移動
+    mVelocity.y += 980.0f * GetFrameTime();
+    mPosition.x += mVelocity.x * GetFrameTime();
+    mPosition.y += mVelocity.y * GetFrameTime();
 
-    // 当たり更新＆寿命
+    // ★ 当たりは移動後に確定（見た目と一致させる）
     computeRectangle();
+
+    // 画面外・寿命で消滅（既存のまま）
     mLife -= dt;
     if (mLife <= 0.0f) {
         setState(Actor::Edead);
@@ -43,5 +57,6 @@ void LobProjectileActor::update() {
 
 void LobProjectileActor::computeRectangle() {
     // 16x16 の簡易当たり
-    mRectangle = { mPosition.x - 8.0f, mPosition.y - 8.0f, 16.0f, 16.0f };
+    mRectangle = { mPosition.x - kW * 0.5f, mPosition.y - kH * 0.5f, kW, kH };
+
 }

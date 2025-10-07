@@ -5,6 +5,7 @@
 //===============================================
 #include "Actor.h"
 #include "DamageTags.h"
+#include <cmath>
 
 class GamePlay;
 
@@ -22,6 +23,9 @@ public:
 
 private:
     GamePlay* mGP   = nullptr;
-    Vector2   mVel  = {};    // 速度：X は向き依存、Y は上向き初速
+    Vector2   mVelocity  = {};    // 速度：X は向き依存、Y は上向き初速
     float     mLife = 4.0f;  // 寿命（秒）
+    class SpriteComponent* mSprite = nullptr; // ★ 回転更新のため保持
+    static constexpr float kW = 16.0f; // ★ 当たり/見た目の幅
+    static constexpr float kH = 16.0f; // ★ 当たり/見た目の高さ
 };

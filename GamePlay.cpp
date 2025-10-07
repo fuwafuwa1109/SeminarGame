@@ -8,11 +8,13 @@
 #include <string>
 #include <algorithm>
 #include <iostream>
+#include <cfloat>
 
 // Actor
 #include "PlayerActor.h"
 #include "EnemyActor.h"
 #include "WeaponActor.h"
+#include "Boss.h"
 #include "StageObject.h"
 #include "BossActor.h"
 // Component
@@ -26,6 +28,7 @@
 #include "UIScreen.h"
 #include "HUD.h"
 #include "DamageUI.h"
+#include "BossHUD.h"
 #include "SoundSystem.h"
 
 GamePlay::GamePlay()
@@ -139,6 +142,8 @@ void GamePlay::update()
             mNext = mNext = new GameOver();
         }
     }
+    checkCheatCode();
+
 }
 
 void GamePlay::draw()
@@ -253,8 +258,70 @@ void GamePlay::onEnterBossArea()
     mPlayer->computeRectangle();
     mCameraSystem->setMode(CameraSystem::Mode::Fixed);
     //mCameraSystem->setFixedTarget(Vector2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f });
-    // ★ ボス出現：ボス部屋ロード後に生成する（ロードで敵を全消しするため）
-    auto* boss = new BossActor(this, Vector2{ (float)mStage->getStageWidth() - 160.0f, 384.0f });
-    auto* bossSprite = new SpriteComponent(boss);
-    bossSprite->setTexture(*getTexture("Assets/testWoodenBoard.png"));
+    
+    
+    // ★ ボス出現：ボス部屋ロード後に生成する（ロードで敵を全消しするため
+    auto* boss = new Boss(this);
+    boss->setPosition(Vector2{
+        (float)mStage->getStageWidth() * 0.70f,
+        0.0f // ← いったん0で置いて、後で床にスナップ
+    });
+    boss->computeRectangle();
+
+    
+    // ★ BossHUD を生成してボスを紐づけ
+    if (mBossHUD) { /* 古いのがあれば閉じる */ mBossHUD->Close(); }
+    mBossHUD = new BossHUD(this);
+    mBossHUD->setBoss(boss);
+// ★ 床スナップ：ボスの足元直下の床トップに位置合わせ
+    {
+         const float bossW = boss->getRectangle().width;
+         const float bossH = boss->getRectangle().height;
+         const float bossX = boss->getPosition().x;
+
+        // X方向に少し幅を持たせて、真下の床を検索
+        const float probeHalfW = bossW * 0.35f;
+        const float probeLeft  = bossX - probeHalfW;
+        const float probeRight = bossX + probeHalfW;
+
+        float bestY = FLT_MAX; // 見つけた床の「上端」の最小値（＝一番近い床）
+        for (const auto& r : mStage->getStageRecs()) {
+            // X方向が重なっていて、自分より下側（上端が0より大きい想定）
+            const bool xOverlap = !(r.x + r.width < probeLeft || probeRight < r.x);
+            if (!xOverlap) continue;
+            // r は床ブロック：その上端に立ちたい
+            if (r.y < bestY) bestY = r.y;
+        }
+        if (bestY < FLT_MAX) {
+            // 俯瞰系：矩形は左上基準、ボスの位置は矩形中央基準なら調整
+            // 本プロジェクトのActorは mPosition を矩形中心としている実装が多いので、
+            // 「床の上端 ＝ bestY」にボスの矩形の“底”を合わせる
+            const float newY = bestY - (bossH * 0.5f);
+            boss->setPosition(Vector2{ bossX, newY });
+            boss->computeRectangle();
+        }
+    }
+
+}
+
+
+void GamePlay::checkCheatCode()
+{
+    int ch;
+    while ((ch = GetCharPressed()) != 0) {
+        if (ch >= 32 && ch <= 126) {
+            char c = static_cast<char>(ch);
+            if (c >= 'A' && c <= 'Z') c = char(c - 'A' + 'a');
+            mCheatBuf.push_back(c);
+            if (mCheatBuf.size() > 16) {
+                mCheatBuf.erase(0, mCheatBuf.size() - 16);
+            }
+        }
+    }
+    if (!mCheatBuf.empty()) {
+        if (mCheatBuf.find("fuwa") != std::string::npos) {
+            mCheatBuf.clear();
+            onEnterBossArea();
+        }
+    }
 }
