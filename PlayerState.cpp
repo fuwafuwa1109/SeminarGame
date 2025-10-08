@@ -131,7 +131,48 @@ void Jump::update()
 
 Guard::Guard(PlayerActor* player)
 	: PlayerState(player, Type::Guard)
+	, isGuarding(false)
 {
+	// ガード成功時のアニメーション
+	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("player", "guard", "png", 6); // "guard_1.png" から "guard_6.png"
+	mAnim.loop = false;
+	// ガード中のアニメーション
+	mUniqueAnim.frames = mPlayer->getSequence()->getAnimationFrames("player", "guard", "png", 1); // "guard_1.png" のみ
+	mUniqueAnim.loop = true;
+}
+
+void Guard::input()
+{
+	// マウス右ボタンを離したらidleへ
+	if (IsMouseButtonUp(MOUSE_BUTTON_RIGHT)) {
+		mPlayer->changeState(Type::Idle);
+	}
+}
+
+void Guard::update()
+{
+	// ガード成功中
+	if (isGuarding) {
+		// アニメーションが終了していたら
+		if (!mPlayer->getAnimSpriteComp()->isAnimating()) {
+			isGuarding = false;
+			mPlayer->getAnimSpriteComp()->play(&mUniqueAnim);
+		}
+	}
+}
+
+void Guard::enter()
+{
+	mPlayer->getAnimSpriteComp()->play(&mUniqueAnim);
+	isGuarding = false;
+}
+
+void Guard::onAttacked()
+{
+	if (isGuarding) return;
+	isGuarding = true;
+	// ガード成功時のアニメーションを流す
+	mPlayer->getAnimSpriteComp()->play(&mAnim);
 }
 
 

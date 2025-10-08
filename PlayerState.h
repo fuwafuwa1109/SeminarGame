@@ -27,7 +27,6 @@ public:
     virtual void exit() {}      // 状態を出る時に呼び出す
     virtual void input() {}     // 入力
     virtual void update() {}    // 更新
-    virtual void init() {}      // 状態をリセットする
 
     Type getType() const { return mType; }
     void setAnimation(Animation anim) { mAnim = anim; }
@@ -85,6 +84,13 @@ class Guard
 {
 public:
     Guard(PlayerActor* player);
+    void input() override;
+    void update() override;
+    void enter() override;
+    void onAttacked();
+private:
+    Animation mUniqueAnim;  // ガード中(攻撃を受けていないとき)のアニメーション
+    bool isGuarding;    // ガード成功中
 };
 
 // 回避

@@ -80,29 +80,45 @@ void AttackComponent::processAttackEnemy()
 {
 	std::vector<EnemyActor*> enemies = 
 		static_cast<GamePlay*>(mOwner->getSequence())->getEnemies();
+	
 	for (auto enemy : enemies) {
-
 		if (enemy->getHpComp()->isInvincible()) {
 			continue;
 		}
 		if (CheckCollisionRecs(enemy->getRectangle(), mCurInfo->colRect)) {
 			mHitActors.push_back(enemy);
-			//Kb
+			
+			// TODO: タスク1
+			/* ------敵のノックバック関連の処理 開始------ */
+			// 攻撃者(プレイヤー)の位置と攻撃対象の位置をキャッシュ
+			// 必要に応じて使ってください
 			Vector2 attackerPos = mOwner->getPosition();
 			Vector2 targetPos = enemy->getPosition();
-			Vector2 direction = Vector2Normalize(Vector2Subtract(targetPos, attackerPos));
+			
+			KnockbackInfo info;
+			// ★KnockbackInfoのパラメータを設定してください
+			// ・定義はAttackComponent.hにあります
+			// VisualStudioなら"KnockbackInfo"を右クリック->"定義をここに表示"で定義を見ることができます
+			// ・ノックバック力はmCurInfo->で取得できます
+			// ・上方向にも動かしたい場合,y座標は画面上部が0,下部が720という座標系であることに注意してください
 
+			// TODO: 開催者: 以下を削除
+			Vector2 direction = Vector2Normalize(Vector2Subtract(targetPos, attackerPos));
 			float upspeed = 2.0f;
 			direction.y -= upspeed;
 			direction = Vector2Normalize(direction);
 
-			KnockbackInfo info;
-			info.target = enemy; //Knockback構造体のtargetにenemyを設定
-			info.timer = 0.2f;
+			info.target = enemy; // Knockback構造体のtargetにenemyを設定
+			info.timer = 0.5f;
 			float speed = mCurInfo->knockBack;
 			info.velocity = Vector2Scale(direction, speed);
 
+			// mKnockbackTargetsに追加
+			// infoの設定ができたら下行をアンコメントしてください
+			// TODO: 開催者: 下行をコメントアウト
 			mKnockbackTargets.push_back(info);
+
+			/* ------敵のノックバック関連の処理 終了------ */
 
 			if (auto boss = dynamic_cast<Boss*>(enemy)) {
 				// TODO Boss にダメージを与えるロジックを実装する
@@ -114,10 +130,6 @@ void AttackComponent::processAttackEnemy()
 			}		
 			mActive = false;
 		}
-
-		// なお、敵が敵に攻撃する事も可能なはず
-		// 自分自身を攻撃したくないなら,componentのownerとは当たらないようにここに書けばいい
-		// ノックバックenter時に敵がstartAttack()を呼べば,敵と敵のノックバック処理も可能だろう
 	}
 
 	// 敵に食らうダメージはオブジェクトにも食らう理屈
@@ -139,16 +151,29 @@ void AttackComponent::processAttackEnemy()
 void AttackComponent::processAttackPlayer()
 {
 	PlayerActor* player = static_cast<GamePlay*>(mOwner->getSequence())->getPlayer();
+	PlayerState* playerState = player->getPlayerState();
 
 	// 無敵or回避ならダメージは与えない
 	if (player->getHpComp()->isInvincible() ||
-		player->getPlayerState()->getType() == PlayerState::Type::Dodge ||
-		player->getPlayerState()->getType() == PlayerState::Type::DodgeAttack) {
+		playerState->getType() == PlayerState::Type::Dodge ||
+		playerState->getType() == PlayerState::Type::DodgeAttack) {
 		return;
 	}
-	// ダメージ与える
+
+	// 当たったら
 	if (CheckCollisionRecs(player->getRectangle(), mCurInfo->colRect)) {
 		mHitActors.push_back(player);
+		
+		// ガード中なら
+		if (playerState->getType() == PlayerState::Type::Guard) {
+			static_cast<Guard*>(playerState)->onAttacked();
+			// ダメージを食らわない
+			// ダメージ半減等にするなら,returnを消してTakeDamageに倍率を掛ける
+			return;
+		}
+
+		//　以下,ダメージやノックバックの処理
+
 		Vector2 attackerPos = mOwner->getPosition();
 		Vector2 targetPos = player->getPosition();
 		Vector2 direction = Vector2Normalize(Vector2Subtract(targetPos, attackerPos));
@@ -159,7 +184,7 @@ void AttackComponent::processAttackPlayer()
 		KnockbackInfo info;
 		info.target = player;
 		info.timer = 0.2f;
-		float speed = 150.0f;
+		float speed = mCurInfo->knockBack;
 		info.velocity = Vector2Scale(direction, speed);
 
 		mKnockbackTargets.push_back(info);

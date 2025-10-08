@@ -8,7 +8,7 @@ EnemyMove::EnemyMove(WeakEnemy* owner)
 	, mEnemy(owner)
 	, mAttackRange(32.0f)
 	, mAttackTime(1.0f)
-	, mAttackTimer(0.0f)
+	, mAttackTimer(100.0f)
 {
 	mJumpSpeed = -600.0f;
 	// ターゲット指定(EnemyActor側から指定してもいい)
@@ -31,24 +31,27 @@ void EnemyMove::update()
 	Vector2 ownerPos = mOwner->getPosition();
 	Vector2 targetPos = mTarget->getPosition();
 
+	mAttackTimer += GetFrameTime();
 	// ステートによって処理が変わる
 	switch (mEnemy->getEnemyState())
 	{
 	case WeakEnemy::E_walk:
 	{
-		// もし射程外ならプレイヤーの方へ移動する
-		if (abs(ownerPos.x - targetPos.x) > mAttackRange ||
-			abs(ownerPos.y - targetPos.y) > mAttackRange) {
-			// 自身の位置に対するプレイヤーの位置の方向を取得(自身正なら-1、負なら1に進む)
-			int xDirection = ((ownerPos.x - targetPos.x) < 0) - ((ownerPos.x - targetPos.x) > 0);
-			mOwner->setForward(xDirection);
-			//水平移動の速度を設定
-			mVelocityX = mOwner->getForward() * mMoveSpeed;
-		}
-		// 射程内なら攻撃状態へ
-		else {
-			mEnemy->changeState(WeakEnemy::E_attack);
-			mVelocityX = 0.0f;	// attack時に速度を0にしてみる
+		// 自身の位置に対するプレイヤーの位置の方向を取得(自身正なら-1、負なら1に進む)
+		int xDirection = ((ownerPos.x - targetPos.x) < 0) - ((ownerPos.x - targetPos.x) > 0);
+		mOwner->setForward(xDirection);
+		//水平移動の速度を設定
+		mVelocityX = mOwner->getForward() * mMoveSpeed;
+		
+		// もし射程内で
+		if (withinRange()) {
+			// 攻撃インターバルを終えていたら
+			if (mAttackTime < mAttackTimer) {
+				// attack状態へ
+				mEnemy->changeState(WeakEnemy::E_attack);
+				mVelocityX = 0.0f;	// attack時に速度を0にしてみる
+				mAttackTimer = 0.0f;
+			}
 		}
 		break;
 	}
@@ -62,15 +65,16 @@ void EnemyMove::update()
 	}
 	case WeakEnemy::E_attack:
 	{
-		// 一定時間たったら || 射程外になったら
-		mAttackTimer += GetFrameTime();
-		if (mAttackTime < mAttackTimer ||
-			abs(ownerPos.x - targetPos.x) > mAttackRange ||
-			abs(ownerPos.y - targetPos.y) > mAttackRange) {
+		// 射程外なら探索
+		if (!withinRange()) {
 			mEnemy->changeState(WeakEnemy::E_walk);
-			// 自身の位置に対するプレイヤーの位置の方向を取得(自身正なら-1、負なら1に進む)
+		}
+		// 射程内で一定時間たったら
+		else if (mAttackTime < mAttackTimer) {
+			// 自身の位置に対するプレイヤーの位置の方向を設定
 			int xDirection = ((ownerPos.x - targetPos.x) < 0) - ((ownerPos.x - targetPos.x) > 0);
 			mOwner->setForward(xDirection);
+			mEnemy->changeState(WeakEnemy::E_attack);
 			mAttackTimer = 0.0f;
 		}
 		break;
@@ -107,5 +111,19 @@ void EnemyMove::fixFloorCol()
 	// 空中からの解消の場合はStateを変更する
 	if (mEnemy->getEnemyState() == WeakEnemy::E_jump) {
 		mEnemy->changeState(WeakEnemy::E_walk);
+	}
+}
+
+bool EnemyMove::withinRange()
+{
+	Vector2 ownerPos = mOwner->getPosition();
+	Vector2 targetPos = mTarget->getPosition();
+
+	if (abs(ownerPos.x - targetPos.x) < mAttackRange &&
+		abs(ownerPos.y - targetPos.y) < mAttackRange) {
+		return true;
+	}
+	else {
+		return false;
 	}
 }

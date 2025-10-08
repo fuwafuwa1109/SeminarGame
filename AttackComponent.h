@@ -4,9 +4,9 @@
 
 struct KnockbackInfo
 {
-    class Actor* target;
-    Vector2 velocity;
-    float timer;
+    class Actor* target;    // ノックバックで移動する対称
+    Vector2 velocity;       // ノックバック初速度
+    float timer;            // ノックバックする時間
 };
 
 /// <summary>
