@@ -42,7 +42,7 @@ static const float kMinionLifeSeconds = 8.0f;
 static const float kMinionHealAmount  = 15.0f;
 
 Boss::Boss(GamePlay* seq)
-: EnemyActor(seq)
+: EnemyActor(seq, EnemyActor::Type::Boss)
 {
     // HP/ガード初期化
     mHpComp = new HpComponent(this, kBossHpMax, 0.0f);
@@ -78,6 +78,8 @@ void Boss::update() {
     tryGuardRecharge();
     tryAttacks(dt);
     trySummon(dt);
+
+    DrawRectangleRec(mRectangle, DARKGRAY);
 }
 
 void Boss::ApplyDamage(float dmg, DamageTag tag) {

@@ -95,6 +95,8 @@ void BeamActor::update()
     computeRectangle();
     updateDamage();
     updateVisualArrow(dt);
+
+    DrawRectangleRec(mRectangle, DARKGRAY);
 }
 
 //--------------------------------------

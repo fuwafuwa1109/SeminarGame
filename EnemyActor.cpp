@@ -4,8 +4,9 @@
 #include "AnimSpriteComponent.h"
 #include "HpComponent.h"
 
-EnemyActor::EnemyActor(Sequence* sequence)
+EnemyActor::EnemyActor(Sequence* sequence, Type type)
 	: Actor(sequence, Actor::Eenemy)
+	, mType(type)
 {
 	static_cast<GamePlay*>(mSequence)->addEnemy(this);
 

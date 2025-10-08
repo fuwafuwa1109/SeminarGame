@@ -14,7 +14,7 @@
 #include "StageObject.h"
 
 WeakEnemy::WeakEnemy(Sequence* sequence)
-	: EnemyActor(sequence)
+	: EnemyActor(sequence, Type::Weak)
     , mEnemyState(E_walk)
 {
     mScale = 2.0f;

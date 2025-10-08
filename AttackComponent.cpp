@@ -114,9 +114,11 @@ void AttackComponent::processAttackEnemy()
 			info.velocity = Vector2Scale(direction, speed);
 
 			// mKnockbackTargetsに追加
-			// infoの設定ができたら下行をアンコメントしてください
+			// infoの設定ができたら下3行をアンコメントしてください
 			// TODO: 開催者: 下行をコメントアウト
-			mKnockbackTargets.push_back(info);
+			if (enemy->getType() != EnemyActor::Type::Boss) {
+				mKnockbackTargets.push_back(info);
+			}
 
 			/* ------敵のノックバック関連の処理 終了------ */
 
