@@ -141,6 +141,7 @@
     <ClCompile Include="BeamActor.cpp" />
     <ClCompile Include="Boss.cpp" />
     <ClCompile Include="BossActor.cpp" />
+    <ClCompile Include="BossHUD.cpp" />
     <ClCompile Include="BossMove.cpp" />
     <ClCompile Include="ExplosionActor.cpp" />
     <ClCompile Include="GuardComponent.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="BeamActor.h" />
     <ClInclude Include="Boss.h" />
     <ClInclude Include="BossActor.h" />
+    <ClInclude Include="BossHUD.h" />
     <ClInclude Include="BossMove.h" />
     <ClInclude Include="DamageTags.h" />
     <ClInclude Include="ExplosionActor.h" />

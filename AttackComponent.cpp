@@ -26,7 +26,7 @@ void AttackComponent::update()
 		if (mTimer > mCurInfo->duration) {
 			mActive = false;
 		}
-	
+
 		switch (mCurInfo->targetType)
 		{
 		// 敵への攻撃の場合

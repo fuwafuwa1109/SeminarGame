@@ -28,7 +28,11 @@ void SoundSystem::loadBGM(const std::string& name, const std::string& file)
 
 void SoundSystem::playSE(const std::string& name)
 {
-    if (mSE.count(name)) PlaySound(mSE[name]);
+    if (mSE.count(name)) { 
+        // BGM‚Ì‰¹—Ê‚ðŽg‚Á‚Ä‚¢‚é
+        SetSoundVolume(mSE[name], mBGMVolume);
+        PlaySound(mSE[name]);
+    }
 }
 
 void SoundSystem::playBGM(const std::string& name, bool loop)

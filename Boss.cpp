@@ -3,6 +3,8 @@
 //===============================================
 #include "Boss.h"
 #include "GamePlay.h"
+#include "PlayerActor.h"
+#include "SpriteComponent.h"
 #include "AnimSpriteComponent.h"
 #include "AttackComponent.h"
 #include "GuardComponent.h"
@@ -11,90 +13,100 @@
 #include "BeamActor.h"
 #include "MinionActor.h"
 #include "BossMove.h"
+#include <raylib.h>
 
-// 調整用の定数（実機プレイで様子を見ながら調整してOK）
-static const float kBossHpMax           = 400.0f; // HP
-static const float kBossGuardMax        = 200.0f; // ガード
-static const float kGuardBreakIFrames   = 0.5f;   // ガードブレイク直後のガード無敵
-static const float kHpLeakWhileGuard    = 0.10f;  // ガード中、HPへ 10% 通す
+// 数値調整（必要に応じて変更）
+static const float kBossHpMax           = 400.0f;
+static const float kGuardMax            = 180.0f;
+static const float kGuardBreakInvincSec = 0.35f; // ガードブレイク直後のガード無敵
+static const float kHpLeakWhileGuard    = 0.10f; // ガード中のHPリーク(10%)
 
-static const float kCD_MeleeLight       = 2.0f;
-static const float kCD_MeleeHeavy       = 4.5f;
-static const float kCD_Lob              = 3.5f;
-static const float kCD_Beam             = 6.0f;
+// ダメージタグ別のガード係数（小さいほどよく減る）
+static const float kGuardCoefNormal     = 1.0f;
+static const float kGuardCoefMeleeLight = 0.9f;
+static const float kGuardCoefMeleeHeavy = 0.7f;
+static const float kGuardCoefLob        = 0.8f;
+static const float kGuardCoefBeam       = 1.1f;
+static const float kGuardCoefExplosion  = 0.35f; // 爆発に弱い
 
-static const float kSummonInterval      = 8.0f;   // 召喚間隔
-static const int   kSummonCount         = 2;      // 1回に何体
-static const float kMinionLifeSeconds   = 6.0f;   // ミニオン寿命
-static const float kMinionHealAmount    = 12.0f;  // 自滅時の回復量
+// 攻撃CD
+static const float kCdMeleeLight = 1.2f;
+static const float kCdMeleeHeavy = 2.2f;
+static const float kCdLob        = 1.6f;
+static const float kCdBeam       = 3.0f;
 
-static const float kMeleeLightDamage    = 15.0f;
-static const float kMeleeHeavyDamage    = 35.0f;
-static const float kLobDamage           = 20.0f;  // LobProjectile側で適用
-static const float kBeamDamage          = 18.0f;  // BeamActor側で適用
+// 召喚
+static const float kSummonInterval = 8.0f;
+static const int   kSummonCount    = 3;
+static const float kMinionLifeSeconds = 8.0f;
+static const float kMinionHealAmount  = 15.0f;
 
-Boss::Boss(GamePlay* sequence)
-    : EnemyActor(sequence)
+Boss::Boss(GamePlay* seq)
+: EnemyActor(seq)
 {
-    // 基本ステータス
-    mHpComp->SetMaxHp(kBossHpMax);
-    mGuard = new GuardComponent(this, kBossGuardMax, kGuardBreakIFrames);
-    // 移動コンポーネント（EnemyMove 踏襲）
-    mMove = new BossMove(this);
+    // HP/ガード初期化
+    mHpComp = new HpComponent(this, kBossHpMax, 0.0f);
+    mGuard  = new GuardComponent(this, kGuardMax, kGuardBreakInvincSec);
 
-    // ステージ最奥側に配置（座標はプロジェクトに合わせて調整）
-    setPosition({ 1400.0f, 360.0f });
-    mForward = -1; // 左向き
+    // 基本見た目（暫定・必要なら差し替え）
+    if (auto* gp = static_cast<GamePlay*>(getSequence())) {
+       Texture2D* tex = gp->getTexture("Assets/testWoodenBoard.png"); // ★確実にある物に
+       if (tex) {
+            auto* spr = new SpriteComponent(this);
+            spr->setTexture(*tex);
+       }
+    }
+
+    // 動き
+    new BossMove(this);
+
+    // 配置（最奥寄り）: GamePlay 側で setPosition 済みならそのまま
+    // mPosition は GamePlay::onEnterBossArea で上書きされます
+    computeRectangle();
 }
 
 void Boss::update() {
-    // まずは EnemyActor 側（アニメ等）を更新
     EnemyActor::update();
 
-    // クールダウンを進める
     const float dt = GetFrameTime();
+    // クールダウン経過
     if (mMeleeLightCd > 0) mMeleeLightCd -= dt;
     if (mMeleeHeavyCd > 0) mMeleeHeavyCd -= dt;
     if (mLobCd        > 0) mLobCd        -= dt;
     if (mBeamCd       > 0) mBeamCd       -= dt;
 
-    // 召喚とガード再生条件のチェック
-    trySummon(dt);
     tryGuardRecharge();
-
-    // サンプルAI：クールダウン到達で順番に発動（実用時は距離/ライン等で切り替え推奨）
-    if (mMeleeLightCd <= 0) { doMeleeLight();   mMeleeLightCd = kCD_MeleeLight; }
-    if (mMeleeHeavyCd <= 0) { doMeleeHeavy();   mMeleeHeavyCd = kCD_MeleeHeavy; }
-    if (mLobCd        <= 0) { doLobProjectile(); mLobCd       = kCD_Lob;        }
-    if (mBeamCd       <= 0) { doBeam();         mBeamCd       = kCD_Beam;       }
-}
-
-void Boss::computeRectangle() {
-    // とりあえず 128x128。スプライトの見た目に合わせて調整推奨。
-    mRectangle.x      = mPosition.x - 64.0f;
-    mRectangle.y      = mPosition.y - 64.0f;
-    mRectangle.width  = 128.0f;
-    mRectangle.height = 128.0f;
+    tryAttacks(dt);
+    trySummon(dt);
 }
 
 void Boss::ApplyDamage(float dmg, DamageTag tag) {
-    // ガードが残っている間は、ガードに吸収 + HPへは 10% だけ通す
-    if (mGuard->HasGuard()) {
-        mGuard->TakeGuardDamage(dmg, tag);
-        mHpComp->TakeDamage(dmg * kHpLeakWhileGuard);
+    // ガードへの係数適用
+    float coef = kGuardCoefNormal;
+    switch (tag) {
+        case DamageTag::MeleeLight:    coef = kGuardCoefMeleeLight; break;
+        case DamageTag::MeleeHeavy:    coef = kGuardCoefMeleeHeavy; break;
+        case DamageTag::ProjectileLob: coef = kGuardCoefLob;        break;
+        case DamageTag::Beam:          coef = kGuardCoefBeam;       break;
+        case DamageTag::Explosion:     coef = kGuardCoefExplosion;  break;
+        default:                       coef = kGuardCoefNormal;     break;
+    }
+
+    if (mGuard && mGuard->HasGuard()) {
+        // ガードを減らし、HPへは少量だけ通す
+        mGuard->TakeGuardDamage(dmg * coef, tag);
+        if (mHpComp) mHpComp->TakeDamage(dmg * kHpLeakWhileGuard);
     } else {
-        // ガードが無いときは通常通り HP へ
-        mHpComp->TakeDamage(dmg);
+        if (mHpComp) mHpComp->TakeDamage(dmg);
     }
 }
 
 void Boss::Heal(float hp) {
-    // 召喚ミニオン自滅時に呼ばれる
-    mHpComp->Recover(hp);
+    if (mHpComp) mHpComp->Recover(hp);
 }
 
 void Boss::tryGuardRecharge() {
-    // HP の割合を見て、50%/25% 到達で一度だけガード全回復
+    if (!mHpComp || !mGuard) return;
     const float ratio = mHpComp->GetHpRatio();
     if (!mDidHalfRecharge && ratio <= 0.5f) {
         mGuard->RechargeFull();
@@ -106,53 +118,81 @@ void Boss::tryGuardRecharge() {
     }
 }
 
-void Boss::doMeleeLight() {
-    // 近接・軽攻撃：短時間の近距離矩形
-    auto* atk = new AttackComponent(this);
-    AttackInfo info{};                 // ★ AttackInfo.h に DamageTag フィールド追加が必要
-    info.damage     = kMeleeLightDamage;
-    info.duration   = 0.15f;
-    info.colRect    = { mRectangle.x - 10.0f, mRectangle.y + 10.0f, mRectangle.width + 20.0f, mRectangle.height - 20.0f };
-    info.knockBack  = 150.0f;
-    info.targetType = Actor::Eplayer;
-    info.tag        = DamageTag::MeleeLight;
-    atk->startAttack(&info);
-}
-
-void Boss::doMeleeHeavy() {
-    // 近接・重攻撃：長め・強め
-    auto* atk = new AttackComponent(this);
-    AttackInfo info{};
-    info.damage     = kMeleeHeavyDamage;
-    info.duration   = 0.35f;
-    info.colRect    = { mRectangle.x - 20.0f, mRectangle.y, mRectangle.width + 40.0f, mRectangle.height };
-    info.knockBack  = 300.0f;
-    info.targetType = Actor::Eplayer;
-    info.tag        = DamageTag::MeleeHeavy;
-    atk->startAttack(&info);
-}
-
-void Boss::doLobProjectile() {
-    // 放物線投擲：弾Actorに挙動を委譲
+void Boss::tryAttacks(float dt) {
     auto* gp = static_cast<GamePlay*>(getSequence());
-    new LobProjectileActor(gp, { mPosition.x, mPosition.y - 40.0f }, mForward);
-}
+    if (!gp) return;
+    auto* player = gp->getPlayer();
+    if (!player) return;
 
-void Boss::doBeam() {
-    // 直線ビーム：瞬間的に長いヒットボックス
-    auto* gp = static_cast<GamePlay*>(getSequence());
-    new BeamActor(gp, { mPosition.x + mForward * 32.0f, mPosition.y - 20.0f }, mForward);
+    const float dx = player->getPosition().x - mPosition.x;
+    const float dist = fabsf(dx);
+    const float meleeRange = 80.0f;   // 近接有効レンジ
+
+    // 近接：レンジ内なら優先
+    if (dist <= meleeRange) {
+         // 前方に矩形を出して当たり判定（重→軽の優先）
+         const float offX = (mForward > 0 ? 32.0f : -92.0f); // 前方向へ
+         const Rectangle heavyHit { mPosition.x + offX, mPosition.y - 40.0f, 60.0f, 60.0f };
+         const Rectangle lightHit { mPosition.x + offX, mPosition.y - 36.0f, 56.0f, 56.0f };
+ 
+         if (mMeleeHeavyCd <= 0.0f) {
+             if (CheckCollisionRecs(heavyHit, player->getRectangle())) {
+                 player->getHpComp()->TakeDamage(35.0f);
+             }
+             mMeleeHeavyCd = kCdMeleeHeavy;
+             return;
+         }
+
+         if (mMeleeLightCd <= 0.0f) {
+             if (CheckCollisionRecs(lightHit, player->getRectangle())) {
+                 player->getHpComp()->TakeDamage(18.0f);
+            }
+             mMeleeLightCd = kCdMeleeLight;
+             return;
+         }
+     }
+
+    // 遠距離：レンジ外なら射撃
+    if (mLobCd <= 0.0f) {
+        // 放物線投擲
+        auto* lob = new LobProjectileActor(gp, mPosition, (dx >= 0 ? +1 : -1));
+        (void)lob;
+        mLobCd = kCdLob;
+    }
+
+    if (mBeamCd <= 0.0f) {
+        // 直線ビーム/魔法
+        auto* beam = new BeamActor(
+            gp,
+            Vector2{ mPosition.x + (mForward > 0 ? 32.0f : -32.0f), mPosition.y },
+            mForward
+        );
+        (void)beam;
+        mBeamCd = kCdBeam;
+    }
 }
 
 void Boss::trySummon(float dt) {
-    // 一定間隔ごとにミニオンを召喚。各ミニオンは寿命で自滅し、ボスを回復。
     mSummonTimer += dt;
     if (mSummonTimer >= kSummonInterval) {
         mSummonTimer = 0.0f;
         auto* gp = static_cast<GamePlay*>(getSequence());
+        if (!gp) return;
         for (int i = 0; i < kSummonCount; ++i) {
             auto* m = new MinionActor(gp, this, kMinionLifeSeconds, kMinionHealAmount);
             m->setPosition({ mPosition.x - 120.0f - 40.0f * i, mPosition.y });
         }
     }
+}
+
+void Boss::computeRectangle()
+{
+    const float w = 64.0f;
+    const float h = 128.0f;
+    mRectangle = {
+        mPosition.x - w * 0.5f,
+        mPosition.y - h * 0.5f,
+        w,
+        h
+    };
 }

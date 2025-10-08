@@ -1,5 +1,6 @@
 #include "StageObject.h"
 #include "GamePlay.h"
+#include "SoundSystem.h"
 
 #include "SpriteComponent.h"
 #include "HpComponent.h"
@@ -71,6 +72,7 @@ void BreakableObj::update()
 	Actor::update();
 
 	if (mHpComp->IsKilled()) {
+		SoundSystem::instance().playSE("ExplosionSE");
 		setState(Edead);
 	}
 }
