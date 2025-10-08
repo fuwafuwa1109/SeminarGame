@@ -69,4 +69,5 @@ void LoadSounds()
 	s.loadSE("NormalAtkSE", "Assets/NormalAttack.mp3");
 	s.loadSE("ChargeAtkSE", "Assets/ChargeAttack.mp3");
 	s.loadSE("DodgeAtkSE", "Assets/DodgeAttack.mp3");
+	s.loadSE("GuardSE", "Assets/Guard.mp3");
 }

@@ -138,7 +138,7 @@ void GamePlay::update()
 
     // playerが死んだら次のシーケンスを設定(とりあえずここに書く)
     if (mPlayer) {
-        if (mPlayer->getHpComp()->IsKilled()) {
+        if (mPlayer->isDead()) {
             mNext = mNext = new GameOver();
         }
     }

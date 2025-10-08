@@ -173,6 +173,8 @@ void Guard::onAttacked()
 	isGuarding = true;
 	// ガード成功時のアニメーションを流す
 	mPlayer->getAnimSpriteComp()->play(&mAnim);
+	// 音鳴らす
+	SoundSystem::instance().playSE("GuardSE");
 }
 
 
@@ -387,3 +389,19 @@ void ChargeAttack::enter()
 
 	SoundSystem::instance().playSE("ChargeAtkSE");
 }
+
+Dying::Dying(PlayerActor* player)
+	: PlayerState(player, Type::Dying)
+{
+	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("player", "death", "png", 10);
+	mAnim.loop = false;
+	mAnim.fps = 15.0f;
+}
+
+void Dying::update()
+{
+	if (!mPlayer->getAnimSpriteComp()->isAnimating()) {
+		mPlayer->onDead();
+	}
+}
+
