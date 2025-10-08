@@ -64,5 +64,9 @@ void LoadSounds()
 	SoundSystem& s = SoundSystem::instance();
 	s.loadBGM("stageBGM", "Assets/uchinari_138.mp3");
 
-
+	s.loadSE("HealSE", "Assets/parameter_up.wav");
+	s.loadSE("ExplosionSE", "Assets/Explosion2.mp3");
+	s.loadSE("NormalAtkSE", "Assets/NormalAttack.mp3");
+	s.loadSE("ChargeAtkSE", "Assets/ChargeAttack.mp3");
+	s.loadSE("DodgeAtkSE", "Assets/DodgeAttack.mp3");
 }

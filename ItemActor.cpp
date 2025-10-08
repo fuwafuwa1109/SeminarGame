@@ -1,5 +1,6 @@
 #include "ItemActor.h"
 #include "GamePlay.h"
+#include "SoundSystem.h"
 
 #include "SpriteComponent.h"
 // ÉvÉåÉCÉÑÅ[
@@ -43,4 +44,6 @@ void HealingItem::onAcquired()
 {
 	static_cast<GamePlay*>(mSequence)->getPlayer()->
 		getHpComp()->Recover(mHealAmount);
+
+	SoundSystem::instance().playSE("HealSE");
 }

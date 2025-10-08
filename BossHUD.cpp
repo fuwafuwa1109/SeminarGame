@@ -30,10 +30,10 @@ void BossHUD::update() {
     float guardRatio = 0.0f;
 
     if (auto* hp = mBoss->getHpComp()) {
-        hpRatio = std::clamp(hp->GetHpRatio(), 0.0f, 1.0f);
+        hpRatio = std::max(0.0f, std::min(hp->GetHpRatio(), 1.0f));
     }
     if (auto* guard = mBoss->getGuardComp()) {
-        guardRatio = std::clamp(guard->GetRatio(), 0.0f, 1.0f);
+        guardRatio = std::max(0.0f, std::min(guard->GetRatio(), 1.0f));
     }
 
     mHpBarNow   = mHpBarFrame;

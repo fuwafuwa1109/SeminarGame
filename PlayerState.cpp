@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include "PlayerActor.h"
 #include "Sequence.h"
+#include "SoundSystem.h"
 
 #include "PlayerMove.h"
 #include "AnimSpriteComponent.h"
@@ -248,6 +249,8 @@ void NormalAttack::enter()
 	PlayerState::enter();
 	computeAttackRectPos(mAttackInfo.colRect);
 	mPlayer->getAttackComp()->startAttack(&mAttackInfo);
+
+	SoundSystem::instance().playSE("NormalAtkSE");
 }
 
 DodgeAttack::DodgeAttack(PlayerActor* player)
@@ -295,6 +298,8 @@ void DodgeAttack::enter()
 	mHorizontalSpeed = mPlayer->getPlayerMove()->getVelocityX();
 	computeAttackRectPos(mAttackInfo.colRect);
 	mPlayer->getAttackComp()->startAttack(&mAttackInfo);
+
+	SoundSystem::instance().playSE("DodgeAtkSE");
 }
 
 void DodgeAttack::exit()
@@ -338,4 +343,6 @@ void ChargeAttack::enter()
 	PlayerState::enter();
 	computeAttackRectPos(mAttackInfo.colRect);
 	mPlayer->getAttackComp()->startAttack(&mAttackInfo);
+
+	SoundSystem::instance().playSE("ChargeAtkSE");
 }
