@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include "Sequence.h"
 
 /// <summary>
@@ -48,6 +49,10 @@ private:
     class CameraSystem* mCameraSystem;
     class HUD* mHUD;
     class DamageUI* mDamageUI;
+    class BossHUD* mBossHUD; // ★ 追加：ボス用HUD
+
+    std::string mCheatBuf;
+    void checkCheatCode();
 };
 
 // collisionの処理はcollisionManagerみたいなの作って
