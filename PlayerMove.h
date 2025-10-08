@@ -13,11 +13,11 @@ public:
     void input()override;
     void update()override;
     void fixFloorCol();
+    void fixCeilingCol();
 
     // ジャンプする瞬間に呼ぶ
     void jump();
 
 private:
-    void StateDraw(); // デバッグ用の関数
     class PlayerActor* mPlayer; // mOwnerと同じ(型が違う)
 };

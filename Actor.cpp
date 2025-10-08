@@ -7,6 +7,7 @@ Actor::Actor(Sequence* sequence, Type type)
 	, mType(type)
 	, mState(Ealive)
 	, mPosition(Vector2())
+	, mScale(1.0f)
 	, mRectangle()
 	, mForward(1)
 {

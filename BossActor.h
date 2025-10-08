@@ -25,11 +25,11 @@ public:
     void takeDamage(float dmg);
 
     // 参照用
-    const Rectangle& getRectangle() const { return mRectangle; }
+    const Rectangle& getRectangle() const override { return mRectangle; }
     float getHp() const { return mHp; }
 
 private:
-    void computeRectangle();          // mPosition から mRectangle を更新
+    void computeRectangle() override;          // mPosition から mRectangle を更新
     void moveTowardPlayer();          // 単純な追尾 AI
     void tryContactDamage();          // 接触ダメージ（CD あり）
 

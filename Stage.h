@@ -9,22 +9,21 @@ public:
     ~Stage();
 	void loadStage(const char* filename);
     void update();
-    void draw();
 
     int getStageWidth() const { return mStageWidth; }
 
-    std::vector<struct Rectangle> getStageRecs() const { return mStageRecs; }
+    // 
+    std::vector<struct Rectangle> getStageRecs() const;
 
 private:
     class GamePlay* mGamePlay;
     class EnemySpawner* mSpawner;
 
-    // ˆÈ‰º‚ÍƒXƒe[ƒW“Á—L‚Ìî•ñ
-    // ƒXƒe[ƒW‚©‚ç“Ç‚İ‚ñ‚¾lŠpŒ`‚Ì”z—ñ(°‚â•Ç‚Ì•`‰æ,collision‚Ég—p)
-    std::vector<struct Rectangle> mStageRecs;
+    // È‰ÍƒXe[WLÌ
+    // Xe[WÇ‚İñ‚¾lp`Ì”z(Ç‚Ì•`,collisionÉgp)
     int mStageWidth;
     int mStageHeight;
-    struct Rectangle BossEntrance;  // ƒ{ƒXƒGƒŠƒA‚Ö‚Ì“ü‚èŒû
+    struct Rectangle BossEntrance{0,0,0,0};  // {XGAÖ‚Ì“
     std::vector<Vector2> mEnemySpawnPoints;
 };
 

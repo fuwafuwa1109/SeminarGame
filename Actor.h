@@ -36,6 +36,7 @@ public:
 	const Vector2& getPosition() const { return mPosition; }
 	virtual const Rectangle& getRectangle() const { return mRectangle; }
 	Sequence* getSequence() const { return mSequence; }
+	float getScale() const { return mScale; }
 	int getForward() const { return mForward; }
 
 	void setState(State state) { mState = state; }
@@ -50,6 +51,7 @@ protected:
 	State mState;
 	Sequence* mSequence;
 	Vector2 mPosition;	  // テクスチャの中心座標
+	float mScale;		  // アクターの拡大率,1以外にするならcomputeRectangle()で注意する
 	int mForward;		  // +1 : 右向き, -1 : 左向き
 	// 当たり判定用の矩形,丸とか色々使うなら派生クラスに持っていく
 	Rectangle mRectangle;

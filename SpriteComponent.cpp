@@ -22,10 +22,12 @@ void SpriteComponent::draw()
 	if (IsTextureValid(mTexture))
 	{
 		Vector2 pos = mOwner->getPosition();
+		float scale = mOwner->getScale();
+		float forward = (float)mOwner->getForward();
 		// •`‰æ
-		Rectangle src = { 0, 0, mOwner->getForward() * (float)mTexWidth, (float)mTexHeight };
-		Rectangle dst = { pos.x, pos.y, (float)mTexWidth, (float)mTexHeight };
-		Vector2 origin = { mTexWidth / 2.0f, mTexHeight / 2.0f };
+		Rectangle src = { 0, 0, forward * (float)mTexWidth, (float)mTexHeight };
+		Rectangle dst = { pos.x, pos.y, (float)mTexWidth * scale, (float)mTexHeight * scale };
+		Vector2 origin = { mTexWidth * scale / 2.0f, mTexHeight * scale / 2.0f };
 		DrawTexturePro(mTexture, src, dst, origin, 0.0f, WHITE);
 	}
 }

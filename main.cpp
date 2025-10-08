@@ -3,8 +3,8 @@
 #include "Title.h"
 #include "SoundSystem.h"
 
-const int WindowWidth = 960;
-const int WindowHeight = 480;
+const int WindowWidth = 1280;
+const int WindowHeight = 720;
 
 void LoadSounds();
 

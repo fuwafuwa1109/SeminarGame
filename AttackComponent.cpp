@@ -5,6 +5,7 @@
 #include "EnemyActor.h"
 #include "PlayerActor.h"
 #include "Boss.h"
+#include "StageObject.h"
 
 #include "HpComponent.h"
 
@@ -28,7 +29,7 @@ void AttackComponent::update()
 
 		switch (mCurInfo->targetType)
 		{
-			// 敵への攻撃の場合
+		// 敵への攻撃の場合
 		case Actor::Type::Eenemy:
 			processAttackEnemy();
 			break;
@@ -98,26 +99,40 @@ void AttackComponent::processAttackEnemy()
 			KnockbackInfo info;
 			info.target = enemy; //Knockback構造体のtargetにenemyを設定
 			info.timer = 0.2f;
-			float speed = 300.0f;
+			float speed = mCurInfo->knockBack;
 			info.velocity = Vector2Scale(direction, speed);
 
 			mKnockbackTargets.push_back(info);
 
-			if (enemy->getHpComp()->TakeDamage(mCurInfo->damage)) {
+			if (auto boss = dynamic_cast<Boss*>(enemy)) {
+				// TODO Boss にダメージを与えるロジックを実装する
+				boss->ApplyDamage(mCurInfo->damage, mCurInfo->tag);
+				// プレイヤーが倒した場合は Boss 撃破 / HP ゼロ で遷移するので setState を呼ぶ必要あり
+			}
+			else if (enemy->getHpComp()->TakeDamage(mCurInfo->damage)) {
 				enemy->setState(Actor::Edead);
+			}		
+			mActive = false;
+		}
+
+		// なお、敵が敵に攻撃する事も可能なはず
+		// 自分自身を攻撃したくないなら,componentのownerとは当たらないようにここに書けばいい
+		// ノックバックenter時に敵がstartAttack()を呼べば,敵と敵のノックバック処理も可能だろう
+	}
+
+	// 敵に食らうダメージはオブジェクトにも食らう理屈
+	std::vector<StageObject*> objs =
+		static_cast<GamePlay*>(mOwner->getSequence())->getStageObjs();
+	for (auto obj : objs) {
+		if (obj->getType() == StageObject::Type::Ebreakable) {
+			int i = 1;
+			if (CheckCollisionRecs(obj->getRectangle(), mCurInfo->colRect)) {
+				if (obj->getHpComp()->TakeDamage(mCurInfo->damage)) {
+					obj->setState(Actor::Edead);
+				}
 				mActive = false;
 			}
 		}
-		
-    // コンフリクト解消の都合で,とりあえず
-		if (CheckCollisionRecs(enemy->getRectangle(), mCurInfo->colRect)) {
-			if (auto boss = dynamic_cast<Boss*>(enemy)) {
-				// Boss クラスにダメージを与える処理
-				boss->ApplyDamage(mCurInfo->damage, mCurInfo->tag);
-				// もしBossが倒れた場合/HPが0になった場合はsetStateを呼ぶ
-			}
-		}
-
 	}
 }
 
@@ -125,7 +140,10 @@ void AttackComponent::processAttackPlayer()
 {
 	PlayerActor* player = static_cast<GamePlay*>(mOwner->getSequence())->getPlayer();
 
-	if (player->getHpComp()->isInvincible()) {
+	// 無敵or回避ならダメージは与えない
+	if (player->getHpComp()->isInvincible() ||
+		player->getPlayerState()->getType() == PlayerState::Type::Dodge ||
+		player->getPlayerState()->getType() == PlayerState::Type::DodgeAttack) {
 		return;
 	}
 	// ダメージ与える

@@ -25,19 +25,20 @@ Stage::~Stage()
 
 void Stage::loadStage(const char* filename)
 {
-    // ƒXƒe[ƒWƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
-    // ' ' : ‹ó”’(’Ês‰Â”\)
-    // # : ƒuƒƒbƒN(•Ç)
-    // w : –Ø‚Ì”Â
-    // E : “G‚ÌoŒ»ˆÊ’u
-    // B : ƒ{ƒXƒGƒŠƒA‚Ì“üŒû ‚±‚±‚ÉƒvƒŒƒCƒ„[‚ªÚG‚µ‚½‚çƒ{ƒXƒXƒe[ƒW‚Ì“Ç‚İ‚İ‚ğn‚ß‚é
-    // ¡‚Í‚Æ‚è‚ ‚¦‚¸ƒVƒ“ƒvƒ‹‚ÈÀ‘•
+    BossEntrance = Rectangle{0,0,0,0};
+// Xe[Wt@CÌ“Ç‚İ
+    // ' ' : (ÊsÂ”\)
+    // # : ubN()
+    // w : Ø‚Ì”
+    // E : GÌoÊ’u
+    // B : {XGAÌ“ ÉƒvC[ÚG{XXe[WÌ“Ç‚İİ‚nß‚
+    // Í‚Æ‚è‚ VvÈ
 
     std::ifstream file(filename);
     std::string line;
     std::vector<std::vector<char>> tiles;
 
-    // 2ŸŒ³”z—ñtiles‚É“Ç‚İ‚İ
+    // 2ztilesÉ“Ç‚İ
     while (std::getline(file, line))
     {
         std::vector<char> row;
@@ -48,9 +49,8 @@ void Stage::loadStage(const char* filename)
         tiles.push_back(row);
     }
 
-    // ƒXƒe[ƒW‘S‘Ì‚Ì•E‚‚³‚ğŒvZ
-    const int tileSize = 32;
-    mStageRecs.clear();
+    // Xe[WSÌ‚Ì•EvZ
+    const int tileSize = 40;
     mStageWidth = (int)tiles[0].size() * tileSize;
     mStageHeight = (int)tiles.size() * tileSize;
 
@@ -59,27 +59,29 @@ void Stage::loadStage(const char* filename)
         int startX = -1;
         for (int x = 0; x < (int)tiles[y].size(); ++x)
         {
-            // °‚Ìê‡
+            // Ìê‡
             if (tiles[y][x] == '#')
             {
-                // 1‚ªn‚Ü‚Á‚½‚ç‹L˜^
+                // 1nÜ‚L^
                 if (startX == -1) startX = x;
             }
             else
             {
-                // °‚¶‚á‚È‚¢‚È‚çrectangle‚ğ‚Â‚­‚é
+                // È‚È‚rectangleÂ‚
                 if (startX != -1)
                 {
-                    // 1‚ª“rØ‚ê‚½‚çRectangle‚É•ÏŠ·
+                    // 1rØ‚ê‚½RectangleÉ•ÏŠ
                     Rectangle r;
                     r.x = (float)startX * tileSize;
                     r.y = (float)y * tileSize;
                     r.width = (float)(x - startX) * tileSize;
                     r.height = (float)tileSize;
-                    mStageRecs.push_back(r);
+
+                    int tileNum = x - startX;
+                    HardObj* obj = new HardObj(mGamePlay, tileNum, r);
                     startX = -1;
                 }
-                // “GoŒ»ˆÊ’u‚Ìê‡
+                // GoÊ’uÌê‡
                 if (tiles[y][x] == 'E')
                 {
                     Vector2 pos = { (float)x * tileSize + tileSize / 2.0f, (float)y * tileSize };
@@ -87,14 +89,16 @@ void Stage::loadStage(const char* filename)
                 }
                 else if (tiles[y][x] == 'W')
                 {
-                    StageObject* bo = new StageObject(mGamePlay);
-                    bo->setPosition(Vector2{ (float)x * tileSize + tileSize / 2.0f,
-                        (float)y * tileSize + tileSize / 2.0f });
-                    bo->computeRectangle();
+                    Rectangle r;
+                    r.x = (float)x * tileSize;
+                    r.y = (float)y * tileSize;
+                    r.width = (float)tileSize;
+                    r.height = (float)tileSize;
+                    BreakableObj* bo = new BreakableObj(mGamePlay, r);
                 }
                 else if (tiles[y][x] == 'B')
                 {
-                    // ƒAƒNƒ^[‚É‚µ‚Ä‚à‚¢‚¢
+                    // AN^[É‚Ä‚
                     BossEntrance.x = (float)x * tileSize;
                     BossEntrance.y = (float)y * tileSize;
                     BossEntrance.width = tileSize;
@@ -102,7 +106,7 @@ void Stage::loadStage(const char* filename)
                 }
             }
         }
-        // s––‚Ü‚Å1‚ª‘±‚¢‚Ä‚¢‚½ê‡
+        // sÜ‚1Ä‚ê‡
         if (startX != -1)
         {
             Rectangle r;
@@ -110,14 +114,17 @@ void Stage::loadStage(const char* filename)
             r.y = (float)y * tileSize;
             r.width = (float)(tiles[y].size() - startX) * tileSize;
             r.height = (float)tileSize;
-            mStageRecs.push_back(r);
+
+            int tileNum = tiles[y].size() - startX;
+            HardObj* obj = new HardObj(mGamePlay, tileNum, r);
+            startX = -1;
         }
     }
 }
 
 void Stage::update()
 {
-    // ƒvƒŒƒCƒ„[‚ÆƒXƒ|[ƒ“’n“_‚Ì‹——£‚ğŒvZ‚µ‚ÄA‹ß‚Ã‚¢‚½‚ç“G‚ğoŒ»‚³‚¹‚é
+    // vC[ÆƒX|[n_Ì‹vZÄAß‚Ã‚Go
     PlayerActor* player = mGamePlay->getPlayer();
 
     Vector2 playerPos = player->getPosition();
@@ -125,7 +132,7 @@ void Stage::update()
     auto iter = mEnemySpawnPoints.begin();
     while (iter != mEnemySpawnPoints.end()) {
         float dist = Vector2Distance(playerPos, *iter);
-        // ƒXƒNƒŠ[ƒ“‚Ì”¼•ªˆÈ‰º‚Ì‹——£‚É‚È‚Á‚½‚çoŒ»‚É‚µ‚Ä‚İ‚½
+        // XN[Ì”È‰Ì‹É‚È‚oÉ‚Ä‚İ‚
         if (dist < GetScreenWidth() / 2.0f + 10.0f) {
             mSpawner->spawnAt(*iter);
             iter = mEnemySpawnPoints.erase(iter);
@@ -135,7 +142,7 @@ void Stage::update()
         }
     }
 
-    // ƒvƒŒƒCƒ„[‚ªƒ{ƒXƒGƒŠƒA‚Ì“üŒû‚ÉN“ü‚µ‚½‚ç
+    // vC[{XGAÌ“ÉN
     if (CheckCollisionRecs(player->getRectangle(), BossEntrance)) {
         BossEntrance.width = 0.0f;
         BossEntrance.height = 0.0f;
@@ -145,10 +152,13 @@ void Stage::update()
     }
 }
 
-void Stage::draw()
+std::vector<struct Rectangle> Stage::getStageRecs() const
 {
-    for (auto& rec : mStageRecs)
-    {
-        DrawRectangleRec(rec, GRAY);
+    std::vector<struct Rectangle> ret;
+    std::vector<StageObject*> objs = mGamePlay->getStageObjs();
+    ret.reserve(objs.size());
+    for (auto* o : objs) {
+        ret.push_back(o->getRectangle());
     }
+    return ret;
 }
