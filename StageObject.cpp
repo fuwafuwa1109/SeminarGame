@@ -60,7 +60,7 @@ BreakableObj::BreakableObj(Sequence* sequence, Rectangle r)
 	mPosition.x = r.x + r.width / 2.0;
 	mPosition.y = r.y + r.height / 2.0;
 	
-	Texture2D* tex = mSequence->getTexture("Assets/testWoodenBoard.png");
+	Texture2D* tex = mSequence->getTexture("Assets/taru.png");
 	mSpriteComp = new SpriteComponent(this);
 	mSpriteComp->setTexture(*tex);
 	
@@ -73,6 +73,10 @@ void BreakableObj::update()
 
 	if (mHpComp->IsKilled()) {
 		SoundSystem::instance().playSE("ExplosionSE");
+		Actor* actor = new ExplosionActor(static_cast<GamePlay*>(mSequence));
+		actor->setPosition(mPosition);
+		actor->computeRectangle();
+		
 		setState(Edead);
 	}
 }

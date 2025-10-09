@@ -7,7 +7,7 @@ class Boss;
 class HpComponent;
 class GuardComponent;
 
-// ボス部屋専用のHUD（ボスHP/ガード表示）
+// ボス部屋専用のHUD (ボスHP/ガード表示)
 class BossHUD : public UIScreen {
 public:
     explicit BossHUD(GamePlay* gp);

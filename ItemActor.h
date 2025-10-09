@@ -37,10 +37,13 @@ private:
 /// <summary>
 /// 移動速度上昇アイテム
 /// </summary>
-//class SpeedUpItem
-//    : ItemActor
-//{
-//public:
-//
-//
-//};
+class SpeedUpItem
+    : public ItemActor
+{
+public:
+    SpeedUpItem(class Sequence* sequence);
+    void onAcquired() override;
+private:
+    float mDuration;        // 効果時間
+    float mBuffMultiplier;  // 倍率でバフを掛ける
+};

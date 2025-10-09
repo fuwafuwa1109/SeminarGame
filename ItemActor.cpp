@@ -6,6 +6,7 @@
 // ƒvƒŒƒCƒ„[
 #include "PlayerActor.h"
 #include "HpComponent.h"
+#include "PlayerMove.h"
 
 ItemActor::ItemActor(Sequence* sequence)
 	: Actor(sequence, Type::Eitem)
@@ -34,7 +35,7 @@ HealingItem::HealingItem(Sequence* sequence)
 	: ItemActor(sequence)
 	, mHealAmount(20.0f)
 {
-	Texture2D* tex = mSequence->getTexture("Assets/testHealingItem.png");
+	Texture2D* tex = mSequence->getTexture("Assets/HealingItem.png");
 	mSpriteComp->setTexture(*tex);
 	mRectangle.width = tex->width;
 	mRectangle.height = tex->height;
@@ -45,5 +46,23 @@ void HealingItem::onAcquired()
 	static_cast<GamePlay*>(mSequence)->getPlayer()->
 		getHpComp()->Recover(mHealAmount);
 
+	SoundSystem::instance().playSE("HealSE");
+}
+
+SpeedUpItem::SpeedUpItem(Sequence* sequence)
+	: ItemActor(sequence)
+	, mDuration(15.0f)
+	, mBuffMultiplier(1.5f)
+{
+	Texture2D* tex = mSequence->getTexture("Assets/SpeedUpItem.png");
+	mSpriteComp->setTexture(*tex);
+	mRectangle.width = tex->width;
+	mRectangle.height = tex->height;
+}
+
+void SpeedUpItem::onAcquired()
+{
+	static_cast<GamePlay*>(mSequence)->getPlayer()
+		->getPlayerMove()->setMultiplier(mBuffMultiplier, mDuration);
 	SoundSystem::instance().playSE("HealSE");
 }

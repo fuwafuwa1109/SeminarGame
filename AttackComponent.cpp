@@ -141,9 +141,7 @@ void AttackComponent::processAttackEnemy()
 		if (obj->getType() == StageObject::Type::Ebreakable) {
 			int i = 1;
 			if (CheckCollisionRecs(obj->getRectangle(), mCurInfo->colRect)) {
-				if (obj->getHpComp()->TakeDamage(mCurInfo->damage)) {
-					obj->setState(Actor::Edead);
-				}
+				obj->getHpComp()->TakeDamage(mCurInfo->damage);
 				mActive = false;
 			}
 		}

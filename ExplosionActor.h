@@ -24,5 +24,6 @@ private:
     float mDamageAmt;
     float mTimer;
     float mActiveTime;
+    bool mActive;
 };
 

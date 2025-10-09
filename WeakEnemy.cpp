@@ -196,9 +196,17 @@ void MeleeEnemy::update()
     fixCollision();
     computeAttackRectPos(mAttackInfo.colRect);
 
+    // Ž€‚ñ‚¾‚çƒAƒCƒeƒ€‚ð—Ž‚Æ‚·
     if (mHpComp->IsKilled()) {
-        if(GetRandomValue(1, 100) > 50) {
-            Actor* item = new HealingItem(mSequence);
+        Actor* item = nullptr;
+        int randomValue = GetRandomValue(1, 100);
+        if(randomValue < 15) {
+            item = new HealingItem(mSequence);
+        }
+        else if (randomValue < 30) {
+            item = new SpeedUpItem(mSequence);
+        }
+        if (item) {
             item->setPosition(mPosition);
             item->computeRectangle();
         }
@@ -246,8 +254,15 @@ void RangedEnemy::update()
     Actor::update();
     fixCollision();
     if (mHpComp->IsKilled()) {
-        if (GetRandomValue(1, 100) > 50) {
-            Actor* item = new HealingItem(mSequence);
+        Actor* item = nullptr;
+        int randomValue = GetRandomValue(1, 100);
+        if (randomValue < 15) {
+            item = new HealingItem(mSequence);
+        }
+        else if (randomValue < 30) {
+            item = new SpeedUpItem(mSequence);
+        }
+        if (item) {
             item->setPosition(mPosition);
             item->computeRectangle();
         }

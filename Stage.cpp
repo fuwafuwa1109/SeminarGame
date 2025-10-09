@@ -25,7 +25,7 @@ Stage::~Stage()
 
 void Stage::loadStage(const char* filename)
 {
-    BossEntrance = Rectangle{0,0,0,0};
+    BossEntrance = Rectangle{0,1,0,0};
     // ' ' : 何もない
     // # : 壁,床
     // w : Breakable Object 障害物
@@ -95,11 +95,11 @@ void Stage::loadStage(const char* filename)
                 }
                 else if (tiles[y][x] == 'B')
                 {
-                    // AN^[ɂĂ
+                    // ボスエリア
                     BossEntrance.x = (float)x * tileSize;
-                    BossEntrance.y = (float)y * tileSize;
+                    BossEntrance.y = (float)(y - 1) * tileSize;
                     BossEntrance.width = tileSize;
-                    BossEntrance.height = tileSize;
+                    BossEntrance.height = tileSize * 2.0f;
                 }
             }
         }
@@ -140,12 +140,10 @@ void Stage::update()
 
     // プレイヤーとボスエリアの接触判定
     if (CheckCollisionRecs(player->getRectangle(), BossEntrance)) {
-        BossEntrance.width = 0.0f;
-        BossEntrance.height = 0.0f;
-        BossEntrance.x = 0.0f;
-        BossEntrance.y = 0.0f;
         mGamePlay->onEnterBossArea();
     }
+
+    DrawRectangleRec(BossEntrance, BLACK);
 }
 
 std::vector<struct Rectangle> Stage::getStageRecs() const

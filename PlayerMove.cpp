@@ -7,6 +7,8 @@
 PlayerMove::PlayerMove(PlayerActor* owner)
 	: MoveComponent(owner)
 	, mPlayer(owner)
+	, mMultiplier(1.0f)
+	, mBuffDuration(-1.0f)
 {
 }
 
@@ -35,7 +37,7 @@ void PlayerMove::update()
 	Vector2 pos = mOwner->getPosition();
 
 	// ‘¬“x‚ðÝ’è
-	pos.x += mVelocityX * mPlayer->getForward() / GetFPS();
+	pos.x += mVelocityX * mPlayer->getForward() / GetFPS() * mMultiplier;
 	pos.y += mVelocityY / GetFPS();
 	// ‚à‚µ°‚É‚Ô‚Â‚©‚é‚Æ‚«,velocityY‚ÍGamePlayƒNƒ‰ƒX‚Ì
 	// updateCollisionŠÖ”‚Å0‚É–ß‚³‚ê‚é
@@ -46,6 +48,11 @@ void PlayerMove::update()
 	if (mPlayer->getPlayerState()->getType() != PlayerState::Type::Dodge &&
 		mPlayer->getPlayerState()->getType() != PlayerState::Type::DodgeAttack) {
 		mVelocityX = 0.0f;
+	}
+
+	if (mBuffDuration > 0) {
+		mBuffDuration -= GetFrameTime();
+		if (mBuffDuration <= 0.0f) mMultiplier = 1.0f;
 	}
 }
 
@@ -70,4 +77,10 @@ void PlayerMove::fixCeilingCol()
 void PlayerMove::jump()
 {
 	mVelocityY = mJumpSpeed;
+}
+
+void PlayerMove::setMultiplier(float buff, float duration)
+{
+	mMultiplier = buff;
+	mBuffDuration = duration;
 }
