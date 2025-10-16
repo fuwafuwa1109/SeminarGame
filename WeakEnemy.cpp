@@ -185,7 +185,7 @@ MeleeEnemy::MeleeEnemy(Sequence* sequence)
     mAttackInfo.colRect.height = 16.0f;
     computeAttackRectPos(mAttackInfo.colRect);
     mAttackInfo.knockBack = 0.0f;
-    mAttackInfo.targetType = Actor::Type::Eplayer;
+    mAttackInfo.targetMask = Actor::Type::Eplayer;
 
     mEnemyMove->setAttackRange(32.0f);
 }

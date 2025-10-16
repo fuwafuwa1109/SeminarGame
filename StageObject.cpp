@@ -72,11 +72,14 @@ void BreakableObj::update()
 	Actor::update();
 
 	if (mHpComp->IsKilled()) {
+
+		// --------------------------------------		
 		SoundSystem::instance().playSE("ExplosionSE");
-		Actor* actor = new ExplosionActor(static_cast<GamePlay*>(mSequence));
+		Actor* actor = new ExplosionActor(mSequence);
 		actor->setPosition(mPosition);
 		actor->computeRectangle();
-		
+		// --------------------------------------
+
 		setState(Edead);
 	}
 }

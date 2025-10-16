@@ -11,6 +11,6 @@ struct AttackInfo
 	Rectangle colRect;	// 攻撃範囲
 	float knockBack;	// ノックバック力
 
-	Actor::Type targetType;   // 攻撃対象
+	unsigned int targetMask;   // 攻撃対象のビットマスク
 	DamageTag tag = DamageTag::Normal; 
 };

@@ -37,7 +37,7 @@ ArrowActor::ArrowActor(Sequence* sequence, Type owner)
     mAttackInfo.duration = 1.0f;
     mAttackInfo.colRect = mRectangle;
     mAttackInfo.knockBack = 0.0f;
-    mAttackInfo.targetType = Actor::Type::Eplayer;
+    mAttackInfo.targetMask = Actor::Type::Eplayer;
     
     mAttackComp->startAttack(&mAttackInfo);
     mAnimsc->play(&mAnim); // 矢は回転/ヒラヒラ想定でループ

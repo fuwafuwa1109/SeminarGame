@@ -5,8 +5,8 @@
 struct KnockbackInfo
 {
     class Actor* target;    // ノックバックで移動する対称
-    Vector2 velocity;       // ノックバック初速度
-    float timer;            // ノックバックする時間
+    Vector2 velocity;       // ノックバック方向と速度
+    float timer;            // ノックバック時間
 };
 
 /// <summary>
@@ -26,6 +26,7 @@ public:
 private:
     void processAttackEnemy();
     void processAttackPlayer();
+    void processAttackStageObj();
     
     float mTimer;
     // 現在の攻撃情報

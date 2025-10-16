@@ -99,7 +99,7 @@ void Boss::ApplyDamage(float dmg, DamageTag tag) {
         mGuard->TakeGuardDamage(dmg * coef, tag);
         if (mHpComp) mHpComp->TakeDamage(dmg * kHpLeakWhileGuard);
     } else {
-        if (mHpComp) mHpComp->TakeDamage(dmg);
+        if (mHpComp) if (mHpComp->TakeDamage(dmg)) { setState(Edead); }
     }
 }
 

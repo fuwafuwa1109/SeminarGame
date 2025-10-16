@@ -73,9 +73,6 @@
     <ClCompile Include="EnemySpawner.cpp">
       <Filter>BASE\System</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerState.cpp">
-      <Filter>BASE\Actor\Player</Filter>
-    </ClCompile>
     <ClCompile Include="PlayerActor.cpp">
       <Filter>BASE\Actor\Player</Filter>
     </ClCompile>
@@ -90,9 +87,6 @@
     </ClCompile>
     <ClCompile Include="SoundSystem.cpp">
       <Filter>BASE\System</Filter>
-    </ClCompile>
-    <ClCompile Include="StageObject.cpp">
-      <Filter>BASE\Actor\StageObj</Filter>
     </ClCompile>
     <ClCompile Include="ItemActor.cpp">
       <Filter>BASE\Actor\Item</Filter>
@@ -118,11 +112,17 @@
     <ClCompile Include="AttackComponent.cpp">
       <Filter>SEMINER</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>SEMINER</Filter>
-    </ClCompile>
     <ClCompile Include="BossHUD.cpp">
       <Filter>BASE\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="StageObject.cpp">
+      <Filter>SEMINER</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>BASE\System</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerState.cpp">
+      <Filter>SEMINER</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -254,9 +254,6 @@
     <ClInclude Include="EnemySpawner.h">
       <Filter>BASE\System</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerState.h">
-      <Filter>BASE\Actor\Player</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerActor.h">
       <Filter>BASE\Actor\Player</Filter>
     </ClInclude>
@@ -271,9 +268,6 @@
     </ClInclude>
     <ClInclude Include="SoundSystem.h">
       <Filter>BASE\System</Filter>
-    </ClInclude>
-    <ClInclude Include="StageObject.h">
-      <Filter>BASE\Actor\StageObj</Filter>
     </ClInclude>
     <ClInclude Include="ItemActor.h">
       <Filter>BASE\Actor\Item</Filter>
@@ -305,10 +299,16 @@
     <ClInclude Include="Animation.h">
       <Filter>BASE</Filter>
     </ClInclude>
-    <ClInclude Include="AttackInfo.h">
-      <Filter>BASE</Filter>
-    </ClInclude>
     <ClInclude Include="AttackComponent.h">
+      <Filter>SEMINER</Filter>
+    </ClInclude>
+    <ClInclude Include="StageObject.h">
+      <Filter>SEMINER</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackInfo.h">
+      <Filter>SEMINER</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerState.h">
       <Filter>SEMINER</Filter>
     </ClInclude>
   </ItemGroup>

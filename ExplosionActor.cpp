@@ -11,14 +11,14 @@
 
 Animation ExplosionActor::mAnim = Animation{ {}, 24.0f, true };
 
-ExplosionActor::ExplosionActor(GamePlay* sequence)
+ExplosionActor::ExplosionActor(Sequence* sequence)
 	: Actor(sequence, Type::Eexplosion)
-	, mGamePlay(sequence)
 	, mTimer(0.0f)
 	, mActiveTime(0.5f)
 	, mDamageAmt(30.0f)
 	, mActive(true)
 {
+	mGamePlay = static_cast<GamePlay*>(sequence);
 	mAnimsc = new AnimSpriteComponent(this);
 	mAnim.frames = { mSequence->getTexture("Assets/testBomb.png") };
 	mAnim.loop = true;
