@@ -53,8 +53,6 @@ void LobProjectileActor::update() {
         player->getHpComp()->TakeDamage(20.0f);
         setState(Actor::Edead);
     }
-
-    DrawRectangleRec(mRectangle, DARKGRAY);
 }
 
 void LobProjectileActor::computeRectangle() {

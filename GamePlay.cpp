@@ -139,6 +139,7 @@ void GamePlay::update()
     // playerが死んだら次のシーケンスを設定(とりあえずここに書く)
     if (mPlayer) {
         if (mPlayer->isDead()) {
+            SoundSystem::instance().stopBGM();
             mNext = mNext = new GameOver();
         }
     }
@@ -243,6 +244,8 @@ void GamePlay::removeSprite(SpriteComponent* sprite)
 
 void GamePlay::onEnterBossArea()
 {
+    SoundSystem::instance().playBGM("BossBGM");
+
     // 敵全削除
     while (!mEnemies.empty()) {
         delete mEnemies.back();
@@ -303,6 +306,10 @@ void GamePlay::onEnterBossArea()
 
 }
 
+void GamePlay::onBossKilled()
+{
+    mNext = new GameClear();
+}
 
 void GamePlay::checkCheatCode()
 {

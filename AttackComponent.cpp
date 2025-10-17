@@ -8,6 +8,7 @@
 #include "StageObject.h"
 
 #include "HpComponent.h"
+#include "SoundSystem.h"
 
 AttackComponent::AttackComponent(Actor* owner)
 	: Component(owner)
@@ -139,6 +140,7 @@ void AttackComponent::processAttackEnemy()
 			}
 			else if (enemy->getHpComp()->TakeDamage(mCurInfo->damage)) {
 				enemy->setState(Actor::Edead);
+				SoundSystem::instance().playSE("YarareSEb");
 			}		
 			mActive = false;
 		}

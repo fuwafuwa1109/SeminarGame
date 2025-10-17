@@ -63,6 +63,7 @@ void LoadSounds()
 {
 	SoundSystem& s = SoundSystem::instance();
 	s.loadBGM("stageBGM", "Assets/uchinari_138.mp3");
+	s.loadBGM("BossBGM", "Assets/shippuRaiden.mp3");
 
 	s.loadSE("HealSE", "Assets/Heal.mp3");
 	s.loadSE("ExplosionSE", "Assets/Explosion2.mp3");
@@ -70,4 +71,6 @@ void LoadSounds()
 	s.loadSE("ChargeAtkSE", "Assets/ChargeAttack.mp3");
 	s.loadSE("DodgeAtkSE", "Assets/DodgeAttack.mp3");
 	s.loadSE("GuardSE", "Assets/Guard.mp3");
+	s.loadSE("YarareSEa", "Assets/gu.mp3");
+	s.loadSE("YarareSEb", "Assets/guaa.mp3");
 }

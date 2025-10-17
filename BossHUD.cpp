@@ -23,16 +23,17 @@ BossHUD::BossHUD(GamePlay* gp)
 }
 
 void BossHUD::update() {
-    if (!mBoss) return;
+    if (!mBoss) Close(); return;
 
     // HP/Guard の比率を取り、バー幅を更新
     float hpRatio    = 0.0f;
     float guardRatio = 0.0f;
-
-    if (auto* hp = mBoss->getHpComp()) {
+    auto* hp = mBoss->getHpComp();
+    if (hp) {
         hpRatio = std::max(0.0f, std::min(hp->GetHpRatio(), 1.0f));
     }
-    if (auto* guard = mBoss->getGuardComp()) {
+    auto* guard = mBoss->getGuardComp();
+    if (guard) {
         guardRatio = std::max(0.0f, std::min(guard->GetRatio(), 1.0f));
     }
 

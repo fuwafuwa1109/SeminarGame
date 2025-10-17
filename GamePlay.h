@@ -35,6 +35,7 @@ public:
     void removeSprite(class SpriteComponent* sprite);
 
     void onEnterBossArea();
+    void onBossKilled();
 
 private:
     Sequence* mNext = nullptr;

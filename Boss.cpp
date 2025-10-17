@@ -14,6 +14,7 @@
 #include "MinionActor.h"
 #include "BossMove.h"
 #include <raylib.h>
+#include "SoundSystem.h"
 
 // 数値調整（必要に応じて変更）
 static const float kBossHpMax           = 400.0f;
@@ -50,7 +51,7 @@ Boss::Boss(GamePlay* seq)
 
     // 基本見た目（暫定・必要なら差し替え）
     if (auto* gp = static_cast<GamePlay*>(getSequence())) {
-       Texture2D* tex = gp->getTexture("Assets/testWoodenBoard.png"); // ★確実にある物に
+       Texture2D* tex = gp->getTexture("Assets/Boss.png");
        if (tex) {
             auto* spr = new SpriteComponent(this);
             spr->setTexture(*tex);
@@ -78,8 +79,6 @@ void Boss::update() {
     tryGuardRecharge();
     tryAttacks(dt);
     trySummon(dt);
-
-    DrawRectangleRec(mRectangle, DARKGRAY);
 }
 
 void Boss::ApplyDamage(float dmg, DamageTag tag) {
@@ -99,7 +98,11 @@ void Boss::ApplyDamage(float dmg, DamageTag tag) {
         mGuard->TakeGuardDamage(dmg * coef, tag);
         if (mHpComp) mHpComp->TakeDamage(dmg * kHpLeakWhileGuard);
     } else {
-        if (mHpComp) if (mHpComp->TakeDamage(dmg)) { setState(Edead); }
+        if (mHpComp) if (mHpComp->TakeDamage(dmg)) { 
+            setState(Edead); 
+            SoundSystem::instance().stopBGM();
+            static_cast<GamePlay*>(mSequence)->onBossKilled();
+        }
     }
 }
 
