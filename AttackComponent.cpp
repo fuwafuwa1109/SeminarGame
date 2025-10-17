@@ -8,6 +8,7 @@
 #include "StageObject.h"
 
 #include "HpComponent.h"
+#include "SoundSystem.h"
 
 AttackComponent::AttackComponent(Actor* owner)
 	: Component(owner)
@@ -27,17 +28,26 @@ void AttackComponent::update()
 			mActive = false;
 		}
 
-		switch (mCurInfo->targetType)
-		{
-		// 敵への攻撃の場合
-		case Actor::Type::Eenemy:
+		// TODO : プログラム課題③ targetMaskをどう使うか
+		// 現状の実装だと,ビットマスクとして使えていないのでバグが発生します.
+		// bit演算子を活用して複数のターゲットに対応できるようにしましょう.
+		// なお,Actor::TypeはEenenmy,Eplayer,EstageObject以外は使いません
+
+		/* 修正箇所 */
+		if (mCurInfo->targetMask == Actor::Type::Eenemy) {
 			processAttackEnemy();
-			break;
-		case Actor::Type::Eplayer:
-			processAttackPlayer();
-			break;
 		}
+		if (mCurInfo->targetMask == Actor::Type::Eplayer) {
+			processAttackPlayer();
+		}
+		if (mCurInfo->targetMask == Actor::Type::EstageObject) {
+			processAttackStageObj();
+		}
+		/* 修正箇所 */
+
+
 	}
+
 	//kb move
 	for (int i = mKnockbackTargets.size() - 1; i >= 0; --i) {
 		auto& info = mKnockbackTargets[i];
@@ -53,10 +63,11 @@ void AttackComponent::update()
 			mKnockbackTargets.erase(mKnockbackTargets.begin() + i);
 		}
 		else {
-			// TODO: タスク2
+			// TODO: プログラム体験①,② 重力弄れます
 			/* ------ ノックバック中の位置更新 開始------ */
+			float gravity = 50.0f;
 			Vector2 currentPos = info.target->getPosition();
-			info.velocity.y += 50.0f;
+			info.velocity.y += gravity;
 			Vector2 moveAmount = Vector2Scale(info.velocity, GetFrameTime());
 			Vector2 newPos = Vector2Add(currentPos, moveAmount);
 
@@ -88,62 +99,50 @@ void AttackComponent::processAttackEnemy()
 		if (CheckCollisionRecs(enemy->getRectangle(), mCurInfo->colRect)) {
 			mHitActors.push_back(enemy);
 			
-			// TODO: タスク1
-			/* ------敵のノックバック関連の処理 開始------ */
+
+
+			// TODO: プログラム体験①,②
+			/* ------ 敵のノックバックに上方向のベクトルを追加する ------ */
+			
 			// 攻撃者(プレイヤー)の位置と攻撃対象の位置をキャッシュ
-			// 必要に応じて使ってください
 			Vector2 attackerPos = mOwner->getPosition();
 			Vector2 targetPos = enemy->getPosition();
 			
 			KnockbackInfo info;
-			// ★KnockbackInfoのパラメータを設定してください
+			// ★KnockbackInfoのパラメータを弄ってみてください
 			// ・定義はAttackComponent.hにあります
-			// VisualStudioなら"KnockbackInfo"を右クリック->"定義をここに表示"で定義を見ることができます
-			// ・ノックバック力はmCurInfo->で取得できます
-			// ・上方向にも動かしたい場合,y座標は画面上部が0,下部が720という座標系であることに注意してください
+			// ・座標系...左上が(0.0),右下が(1280.720)
 
-			// TODO: 開催者: 以下を削除
+			// ノックバック方向,現在は横方向のみ
 			Vector2 direction = Vector2Normalize(Vector2Subtract(targetPos, attackerPos));
-			float upspeed = 2.0f;
-			direction.y -= upspeed;
+			direction.y = 0.0f;
 			direction = Vector2Normalize(direction);
 
-			info.target = enemy; // Knockback構造体のtargetにenemyを設定
+			info.target = enemy;
 			info.timer = 0.5f;
+
+			// 現在は攻撃情報からノックバック速度を得ています
+			// ②の課題ではダメージ量によってスケーリングする仕様にする等,工夫してみてください
 			float speed = mCurInfo->knockBack;
 			info.velocity = Vector2Scale(direction, speed);
 
 			// mKnockbackTargetsに追加
-			// infoの設定ができたら下行をアンコメントしてください
-			// TODO: 開催者: 下行をコメントアウト
-			mKnockbackTargets.push_back(info);
+			if (enemy->getType() != EnemyActor::Type::Boss) {
+				mKnockbackTargets.push_back(info);
+			}
+			/* ------ 敵のノックバックに上方向のベクトルを追加する ------ */
 
-			/* ------敵のノックバック関連の処理 終了------ */
 
+
+			/* 以下,ダメージを与える処理 */
 			if (auto boss = dynamic_cast<Boss*>(enemy)) {
-				// TODO Boss にダメージを与えるロジックを実装する
 				boss->ApplyDamage(mCurInfo->damage, mCurInfo->tag);
-				// プレイヤーが倒した場合は Boss 撃破 / HP ゼロ で遷移するので setState を呼ぶ必要あり
 			}
 			else if (enemy->getHpComp()->TakeDamage(mCurInfo->damage)) {
 				enemy->setState(Actor::Edead);
+				SoundSystem::instance().playSE("YarareSEb");
 			}		
 			mActive = false;
-		}
-	}
-
-	// 敵に食らうダメージはオブジェクトにも食らう理屈
-	std::vector<StageObject*> objs =
-		static_cast<GamePlay*>(mOwner->getSequence())->getStageObjs();
-	for (auto obj : objs) {
-		if (obj->getType() == StageObject::Type::Ebreakable) {
-			int i = 1;
-			if (CheckCollisionRecs(obj->getRectangle(), mCurInfo->colRect)) {
-				if (obj->getHpComp()->TakeDamage(mCurInfo->damage)) {
-					obj->setState(Actor::Edead);
-				}
-				mActive = false;
-			}
 		}
 	}
 }
@@ -190,5 +189,20 @@ void AttackComponent::processAttackPlayer()
 		mKnockbackTargets.push_back(info);
 
 		player->getHpComp()->TakeDamage(mCurInfo->damage);
+	}
+}
+
+void AttackComponent::processAttackStageObj()
+{
+	std::vector<StageObject*> objs =
+		static_cast<GamePlay*>(mOwner->getSequence())->getStageObjs();
+	for (auto obj : objs) {
+		if (obj->getType() == StageObject::Type::Ebreakable) {
+			int i = 1;
+			if (CheckCollisionRecs(obj->getRectangle(), mCurInfo->colRect)) {
+				obj->getHpComp()->TakeDamage(mCurInfo->damage);
+				mActive = false;
+			}
+		}
 	}
 }

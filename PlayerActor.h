@@ -29,6 +29,8 @@ public:
     void computeRectangle() override;
     void changeState(PlayerState::Type type);
 
+    void onDead() { mIsDead = true; }
+    bool isDead() const { return mIsDead; }
 private:
     // ステージとの当たり判定
     void fixCollision();
@@ -40,6 +42,8 @@ private:
     class AnimSpriteComponent* mAnimsc;
     class AttackComponent* mAttackComp;
     class HpComponent* mHpComp;
+    
+    bool mIsDead;
 };
 
 // 挙動

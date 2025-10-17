@@ -41,6 +41,9 @@ private:
     Texture2D mTexture;    // シーケンスに持たせてもいいが,作って登録する手間は省く
 };
 
+/// <summary>
+/// 破壊可能オブジェクト(たる)
+/// </summary>
 class BreakableObj :
     public StageObject
 {

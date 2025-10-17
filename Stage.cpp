@@ -25,20 +25,18 @@ Stage::~Stage()
 
 void Stage::loadStage(const char* filename)
 {
-    BossEntrance = Rectangle{0,0,0,0};
-// Xe[Wt@C̓ǂݍ
-    // ' ' : (ʍs\)
-    // # : ubN()
-    // w : ؂̔
-    // E : G̏oʒu
-    // B : {XGA̓ ɃvC[ڐG{XXe[W̓ǂݍ݂n߂
-    // ͂Ƃ肠VvȎ
+    BossEntrance = Rectangle{0,1,0,0};
+    // ' ' : 何もない
+    // # : 壁,床
+    // w : Breakable Object 障害物
+    // E : 敵出現位置
+    // B : ボスエリア入口
 
     std::ifstream file(filename);
     std::string line;
     std::vector<std::vector<char>> tiles;
 
-    // 2ztilesɓǂݍ
+    // ファイルから二次元ベクトルに読み込む
     while (std::getline(file, line))
     {
         std::vector<char> row;
@@ -49,7 +47,7 @@ void Stage::loadStage(const char* filename)
         tiles.push_back(row);
     }
 
-    // Xe[WŜ̕EvZ
+    // ステージtxtの文字一つ分の縦横サイズ
     const int tileSize = 40;
     mStageWidth = (int)tiles[0].size() * tileSize;
     mStageHeight = (int)tiles.size() * tileSize;
@@ -59,18 +57,16 @@ void Stage::loadStage(const char* filename)
         int startX = -1;
         for (int x = 0; x < (int)tiles[y].size(); ++x)
         {
-            // ̏ꍇ
+            // 壁
             if (tiles[y][x] == '#')
             {
-                // 1n܂L^
                 if (startX == -1) startX = x;
             }
             else
             {
-                // ȂȂrectangle
+                // 床のrectangle作成中の場合
                 if (startX != -1)
                 {
-                    // 1r؂ꂽRectangleɕϊ
                     Rectangle r;
                     r.x = (float)startX * tileSize;
                     r.y = (float)y * tileSize;
@@ -78,10 +74,11 @@ void Stage::loadStage(const char* filename)
                     r.height = (float)tileSize;
 
                     int tileNum = x - startX;
+                    // 床を作成
                     HardObj* obj = new HardObj(mGamePlay, tileNum, r);
                     startX = -1;
                 }
-                // Goʒȕꍇ
+                // 敵
                 if (tiles[y][x] == 'E')
                 {
                     Vector2 pos = { (float)x * tileSize + tileSize / 2.0f, (float)y * tileSize };
@@ -98,11 +95,11 @@ void Stage::loadStage(const char* filename)
                 }
                 else if (tiles[y][x] == 'B')
                 {
-                    // AN^[ɂĂ
+                    // ボスエリア
                     BossEntrance.x = (float)x * tileSize;
-                    BossEntrance.y = (float)y * tileSize;
+                    BossEntrance.y = (float)(y - 1) * tileSize;
                     BossEntrance.width = tileSize;
-                    BossEntrance.height = tileSize;
+                    BossEntrance.height = tileSize * 2.0f;
                 }
             }
         }
@@ -124,15 +121,14 @@ void Stage::loadStage(const char* filename)
 
 void Stage::update()
 {
-    // vC[ƃX|[n_̋vZāA߂ÂGo
     PlayerActor* player = mGamePlay->getPlayer();
-
     Vector2 playerPos = player->getPosition();
 
+    // 敵出現判定
     auto iter = mEnemySpawnPoints.begin();
     while (iter != mEnemySpawnPoints.end()) {
         float dist = Vector2Distance(playerPos, *iter);
-        // XN[̔ȉ̋ɂȂoɂĂ݂
+        // 敵出現
         if (dist < GetScreenWidth() / 2.0f + 10.0f) {
             mSpawner->spawnAt(*iter);
             iter = mEnemySpawnPoints.erase(iter);
@@ -142,14 +138,12 @@ void Stage::update()
         }
     }
 
-    // vC[{XGA̓ɐN
+    // プレイヤーとボスエリアの接触判定
     if (CheckCollisionRecs(player->getRectangle(), BossEntrance)) {
-        BossEntrance.width = 0.0f;
-        BossEntrance.height = 0.0f;
-        BossEntrance.x = 0.0f;
-        BossEntrance.y = 0.0f;
         mGamePlay->onEnterBossArea();
     }
+
+    DrawRectangleRec(BossEntrance, BLACK);
 }
 
 std::vector<struct Rectangle> Stage::getStageRecs() const

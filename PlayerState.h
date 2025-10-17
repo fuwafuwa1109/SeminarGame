@@ -21,6 +21,7 @@ public:
         NormalAttack,
         DodgeAttack,
         ChargeAttack,
+        Dying
     };
     virtual ~PlayerState() {}
     virtual void enter();       // ó‘Ô‚É“ü‚Á‚½‚ÉŒÄ‚Ño‚·
@@ -135,6 +136,7 @@ private:
     AttackInfo mAttackInfo;
 };
 
+// ‰ñ”ğUŒ‚
 class DodgeAttack
     : public PlayerState
 {
@@ -150,6 +152,7 @@ private:
     AttackInfo mAttackInfo;
 };
 
+// ‚½‚ßUŒ‚
 class ChargeAttack
     : public PlayerState
 {
@@ -163,6 +166,13 @@ private:
     AttackInfo mAttackInfo;
 };
 
+class Dying
+    : public PlayerState
+{
+public:
+    Dying(PlayerActor* player);
+    void update() override;
+};
 
 // ó‘Ô
 // idle
@@ -173,3 +183,4 @@ private:
 // normalAttack
 // dodgeAttack
 // chargeAttack
+// dying

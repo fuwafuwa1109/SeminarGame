@@ -4,7 +4,7 @@
 #include "PlayerActor.h"
 
 // DEBUG: 静的フラグ定義
-bool BeamActor::sDebugBeam = false; // DEBUG
+bool BeamActor::sDebugBeam = true; // DEBUG
 
 //--------------------------------------
 BeamActor::BeamActor(GamePlay* gp, Vector2 start, int forward)
@@ -95,6 +95,8 @@ void BeamActor::update()
     computeRectangle();
     updateDamage();
     updateVisualArrow(dt);
+
+    draw();
 }
 
 //--------------------------------------

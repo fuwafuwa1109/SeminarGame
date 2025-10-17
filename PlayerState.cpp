@@ -173,6 +173,8 @@ void Guard::onAttacked()
 	isGuarding = true;
 	// ガード成功時のアニメーションを流す
 	mPlayer->getAnimSpriteComp()->play(&mAnim);
+	// 音鳴らす
+	SoundSystem::instance().playSE("GuardSE");
 }
 
 
@@ -263,8 +265,10 @@ NormalAttack::NormalAttack(PlayerActor* player)
 	mAttackInfo.colRect.height = 64.0f;
 	computeAttackRectPos(mAttackInfo.colRect);
 	mAttackInfo.knockBack = 600.0f;
-	mAttackInfo.targetType = Actor::Type::Eenemy;
 	mAttackInfo.tag = DamageTag::MeleeLight;   // ★ 追加：軽攻撃
+
+	// TODO: プログラム体験③ ターゲットレイヤー変更
+	mAttackInfo.targetMask = Actor::Type::Eenemy;
 }
 
 void NormalAttack::update()
@@ -309,7 +313,9 @@ DodgeAttack::DodgeAttack(PlayerActor* player)
 	mAttackInfo.colRect.height = 64.0f;
 	computeAttackRectPos(mAttackInfo.colRect);
 	mAttackInfo.knockBack = 600.0f;
-	mAttackInfo.targetType = Actor::Type::Eenemy;
+
+	// TODO: プログラム体験③ ターゲットレイヤー変更
+	mAttackInfo.targetMask = Actor::Type::Eenemy;
 }
 
 void DodgeAttack::update()
@@ -362,8 +368,10 @@ ChargeAttack::ChargeAttack(PlayerActor* player)
 	mAttackInfo.colRect.height = 70.0f;
 	computeAttackRectPos(mAttackInfo.colRect);
 	mAttackInfo.knockBack = 1000.0f;
-	mAttackInfo.targetType = Actor::Type::Eenemy;
 	mAttackInfo.tag = DamageTag::MeleeHeavy;   // ★ 追加：重攻撃
+	
+	// TODO: プログラム体験③ ターゲットレイヤー変更
+	mAttackInfo.targetMask = Actor::Type::Eenemy;
 }
 
 void ChargeAttack::update()
@@ -387,3 +395,19 @@ void ChargeAttack::enter()
 
 	SoundSystem::instance().playSE("ChargeAtkSE");
 }
+
+Dying::Dying(PlayerActor* player)
+	: PlayerState(player, Type::Dying)
+{
+	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("player", "death", "png", 10);
+	mAnim.loop = false;
+	mAnim.fps = 15.0f;
+}
+
+void Dying::update()
+{
+	if (!mPlayer->getAnimSpriteComp()->isAnimating()) {
+		mPlayer->onDead();
+	}
+}
+

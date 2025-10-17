@@ -11,16 +11,17 @@
 
 Animation ExplosionActor::mAnim = Animation{ {}, 24.0f, true };
 
-ExplosionActor::ExplosionActor(GamePlay* sequence)
+ExplosionActor::ExplosionActor(Sequence* sequence)
 	: Actor(sequence, Type::Eexplosion)
-	, mGamePlay(sequence)
-	, mDamageAmt(30.0f)
 	, mTimer(0.0f)
 	, mActiveTime(0.5f)
+	, mDamageAmt(30.0f)
+	, mActive(true)
 {
+	mGamePlay = static_cast<GamePlay*>(sequence);
 	mAnimsc = new AnimSpriteComponent(this);
 	mAnim.frames = { mSequence->getTexture("Assets/testBomb.png") };
-	mAnim.loop = false;
+	mAnim.loop = true;
 	mAnimsc->play(&mAnim);
 }
 
@@ -34,16 +35,8 @@ void ExplosionActor::update()
 		return;
 	}
 
-	/* �G��v���C���[�Ƃ̃R���W�����`�F�b�N */
-	PlayerActor* player = mGamePlay->getPlayer();
-	Rectangle targetRec = player->getRectangle();
-	if (!player->getHpComp()->isInvincible()) {
-		if (CheckCollisionRecs(targetRec, mRectangle)) {
-		
-			player->getHpComp()->TakeDamage(mDamageAmt);
-		}
-	}
-	
+	if (!mActive) return;
+	Rectangle targetRec;
 	for (auto enemy : mGamePlay->getEnemies()) {
 		if (!enemy->getHpComp()->isInvincible()) {
 			targetRec = enemy->getRectangle();
@@ -56,19 +49,11 @@ void ExplosionActor::update()
 						enemy->setState(Actor::Edead);
 					}
 				}
+				mActive = false;
 			}
 
 		}
 	}
-
-	//for (auto& obj : mGamePlay->getStageObjs()) {
-	//	if (!obj->getHpComp()->isInvincible()) {
-	//		targetRec = obj->getRectangle();
-	//		if (CheckCollisionRecs(targetRec, mRectangle)) {
-	//			obj->getHpComp()->TakeDamage(mDamageAmt);
-	//		}
-	//	}
-	//}
 }
 
 void ExplosionActor::computeRectangle()

@@ -7,7 +7,7 @@
 #include "HpComponent.h"  // SetMaxHp() を呼ぶため
 
 MinionActor::MinionActor(GamePlay* seq, Boss* ownerBoss, float life, float heal)
-    : EnemyActor(seq)
+    : EnemyActor(seq, Type::Weak)
     , mBoss(ownerBoss)
     , mLife(life)
     , mHealAmt(heal)

@@ -18,6 +18,10 @@ public:
     // ジャンプする瞬間に呼ぶ
     void jump();
 
+    void setMultiplier(float buff, float duration);
+
 private:
     class PlayerActor* mPlayer; // mOwnerと同じ(型が違う)
+    float mMultiplier;  // バフを掛ける際に使用
+    float mBuffDuration;
 };

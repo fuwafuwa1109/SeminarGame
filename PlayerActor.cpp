@@ -11,6 +11,7 @@
 
 PlayerActor::PlayerActor(Sequence* sequence)
 	: Actor(sequence, Actor::Eplayer)
+	, mIsDead(false)
 {
 	mPosition = Vector2{ 100.0f, 200.0f };
 	mScale = 2.0f;
@@ -39,6 +40,7 @@ PlayerActor::PlayerActor(Sequence* sequence)
 	mPlayerStates[PlayerState::Type::NormalAttack] = new NormalAttack(this);
 	mPlayerStates[PlayerState::Type::DodgeAttack] = new DodgeAttack(this);
 	mPlayerStates[PlayerState::Type::ChargeAttack] = new ChargeAttack(this);
+	mPlayerStates[PlayerState::Type::Dying] = new Dying(this);
 
 	mAttackComp = new AttackComponent(this);
 
@@ -65,6 +67,12 @@ void PlayerActor::update()
 	// Šî’ê‚Ìupdate() : Component‚Ìupdate
 	Actor::update();
 	mPlayerState->update();
+
+	if (mPlayerState->getType() != PlayerState::Type::Dying) {
+		if (mHpComp->IsKilled()) {
+			changeState(PlayerState::Type::Dying);
+		}
+	}
 
 	fixCollision();
 

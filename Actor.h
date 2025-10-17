@@ -8,14 +8,15 @@
 class Actor
 {
 public:	
+	// bitƒtƒ‰ƒO‚ÅŠÇ—
 	enum Type
 	{
-		Eplayer,
-		Eenemy,
-		Eweapon,
-		EstageObject,
-		Eexplosion,
-		Eitem,
+		Eplayer			= 1 << 0,
+		Eenemy			= 1 << 1,
+		Eweapon			= 1 << 2,
+		EstageObject	= 1 << 3,
+		Eexplosion		= 1 << 4,
+		Eitem			= 1 << 5,
 	};
 	enum State
 	{

@@ -94,8 +94,6 @@ void GamePlay::update()
 
     mCameraSystem->update();
 
-    mStage->update();
-
     // Actorのupdate
     mUpdatingActors = true;
     for (Actor* actor : mActors) {
@@ -136,9 +134,12 @@ void GamePlay::update()
         }
     }
 
+    mStage->update();
+
     // playerが死んだら次のシーケンスを設定(とりあえずここに書く)
     if (mPlayer) {
-        if (mPlayer->getHpComp()->IsKilled()) {
+        if (mPlayer->isDead()) {
+            SoundSystem::instance().stopBGM();
             mNext = mNext = new GameOver();
         }
     }
@@ -243,6 +244,8 @@ void GamePlay::removeSprite(SpriteComponent* sprite)
 
 void GamePlay::onEnterBossArea()
 {
+    SoundSystem::instance().playBGM("BossBGM");
+
     // 敵全削除
     while (!mEnemies.empty()) {
         delete mEnemies.back();
@@ -254,10 +257,9 @@ void GamePlay::onEnterBossArea()
 
     mStage->loadStage("Assets/stage0_boss.txt");
     // ステージから位置を拾ってきてもいいかも
-    mPlayer->setPosition(Vector2{ 64.0f, 384.0f });
+    mPlayer->setPosition(Vector2{ 120.0f, 400.0f });
     mPlayer->computeRectangle();
     mCameraSystem->setMode(CameraSystem::Mode::Fixed);
-    //mCameraSystem->setFixedTarget(Vector2{ GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f });
     
     
     // ★ ボス出現：ボス部屋ロード後に生成する（ロードで敵を全消しするため
@@ -304,6 +306,10 @@ void GamePlay::onEnterBossArea()
 
 }
 
+void GamePlay::onBossKilled()
+{
+    mNext = new GameClear();
+}
 
 void GamePlay::checkCheatCode()
 {

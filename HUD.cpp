@@ -14,9 +14,9 @@ HUD::HUD(Sequence* sequence)
 void HUD::update()
 {
 	PlayerActor* player = static_cast<GamePlay*>(mSequence)->getPlayer();
-
+	if (!player) return;
 	// 現在のplayerのhpに応じて,表示する幅を変える
-	// TODO: updateで毎回知る必要はない,リファクタリングの余地あり
+	// 通知->更新ではなく,updateで毎回更新するようにしている
 	mCurrentHp.width = mHpbar.width * player->getHpComp()->GetHpRatio();
 	mPlayerStateType = player->getPlayerState()->getType();
 }
