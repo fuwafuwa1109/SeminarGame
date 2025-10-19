@@ -74,6 +74,7 @@ class Jump
 public:
     Jump(PlayerActor* player);
     void enter() override;
+    void input() override;
     void update() override;
 private:
     float mHorizontalSpeed; // ƒWƒƒƒ“ƒv’†‚Ì‰¡ˆÚ“®‘¬“x
