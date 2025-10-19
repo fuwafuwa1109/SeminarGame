@@ -121,6 +121,14 @@ void Jump::enter()
 	}
 }
 
+void Jump::input()
+{
+	// Attack
+	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+		mPlayer->changeState(Type::NormalAttack);
+	}
+}
+
 void Jump::update()
 {
 	// 水平移動
