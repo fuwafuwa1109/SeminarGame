@@ -23,7 +23,7 @@ BossHUD::BossHUD(GamePlay* gp)
 }
 
 void BossHUD::update() {
-    if (!mBoss) Close(); return;
+    if (!mBoss) { Close(); return; }
 
     // HP/Guard の比率を取り、バー幅を更新
     float hpRatio    = 0.0f;
