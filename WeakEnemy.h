@@ -21,6 +21,7 @@ public:
         E_walk,
         E_jump,
         E_attack,
+        E_hit
     };
 
     void changeState(EnemyState nextState);

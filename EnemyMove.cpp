@@ -9,6 +9,8 @@ EnemyMove::EnemyMove(WeakEnemy* owner)
 	, mAttackRange(32.0f)
 	, mAttackTime(1.0f)
 	, mAttackTimer(100.0f)
+	, mHitTime(0.5f)
+	, mHitTimer(0.0f)
 {
 	mJumpSpeed = -600.0f;
 	// ターゲット指定(EnemyActor側から指定してもいい)
@@ -79,6 +81,14 @@ void EnemyMove::update()
 		}
 		break;
 	}
+	case WeakEnemy::E_hit:
+	{
+		mHitTimer += GetFrameTime();
+		if (mHitTime < mHitTimer) {
+			mHitTimer = 0.0f;
+			mEnemy->changeState(WeakEnemy::E_walk);
+		}
+	}
 	}
 
 	//速度を位置に反映
@@ -87,21 +97,6 @@ void EnemyMove::update()
 	mOwner->setPosition(ownerPos);
 	// Enemyの移動が完全に終了した後の位置を基に逐次描画するためのRectangle位置明示
 	mOwner->computeRectangle();
-
-	// 以下デバッグ用
-	//switch (mEnemy->getEnemyState())
-	//{
-	//case WeakEnemy::E_walk: {
-	//	DrawText("Enemy : walk", 700, 150, 30, BLACK); break;
-	//}
-	//case WeakEnemy::E_jump: {
-
-	//	DrawText("Enemy : jump", 700, 150, 30, BLACK); break;
-	//}
-	//case WeakEnemy::E_attack: {
-	//	DrawText("Enemy : attack", 700, 150, 30, BLACK); break;
-	//}
-	//}
 }
 
 void EnemyMove::fixFloorCol()

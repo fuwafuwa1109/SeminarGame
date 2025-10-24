@@ -56,6 +56,9 @@ void WeakEnemy::onEnterState(EnemyState nextState)
         mAnimsc->play(&getAnimation(E_attack));
         attack();
         break;
+    case E_hit:
+        mAnimsc->play(&getAnimation(E_hit));
+        break;
     }
 }
 
@@ -68,7 +71,8 @@ void WeakEnemy::onExitState(EnemyState nextState)
     case E_jump:
         break;
     case E_attack:
-        //mWeaponComp->endAttack();
+        break;
+    case E_hit:
         break;
     }
 }
@@ -157,24 +161,23 @@ std::unordered_map<WeakEnemy::EnemyState, Animation> MeleeEnemy::mAnimations = {
 MeleeEnemy::MeleeEnemy(Sequence* sequence)
 	: WeakEnemy(sequence)
 {
-	// アニメーションを設定,諸事情でnewする度に呼んでいる
-    // getTextureは必ずロードするわけではないのでとりあえず妥協
-	// framesにアニメーションを構成するテクスチャを入れる
-    std::vector<Texture2D*> frames;
-	// Walk
-	frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
+    // アニメーションを設定,諸事情でnewする度に呼んでいる
+    // 毎回ロードするわけではないのでとりあえず妥協
+
     // Walk
-    //frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
     mAnimations[E_walk].frames = mSequence->getAnimationFrames("enemy", "dash", "png", 6);
     mAnimations[E_walk].loop = true;
     // attack
-    //frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
-    mAnimations[E_attack].frames = mSequence->getAnimationFrames("enemy", "idle", "png", 5);
+    mAnimations[E_attack].frames = mSequence->getAnimationFrames("enemy", "attack", "png", 5);
     mAnimations[E_attack].loop = false;
     // jump
-    frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
-    mAnimations[E_jump].frames = mSequence->getAnimationFrames("enemy", "idle", "png", 5);
+    mAnimations[E_jump].frames = mSequence->getAnimationFrames("enemy", "jump", "png", 3);
     mAnimations[E_jump].loop = false;
+    mAnimations[E_jump].fps = 20.0f;
+    // hit
+    mAnimations[E_hit].frames = mSequence->getAnimationFrames("enemy", "hit", "png", 3);
+    mAnimations[E_hit].loop = false;
+    mAnimations[E_hit].fps = 10.0f;
 
     // 攻撃は近接
     mAttackComp = new AttackComponent(this);
@@ -210,6 +213,13 @@ void MeleeEnemy::update()
             item->setPosition(mPosition);
             item->computeRectangle();
         }
+
+        //if (randomValue < 15) {
+        //    new SpeedUpItem(mSequence);
+        //    // 敵の位置に設定
+        //    item->setPosition(mPosition);
+        //    item->computeRectangle();
+        //}
     }
     // 当たり判定表示
     DrawRectangleRec(mRectangle, WHITE);
@@ -241,9 +251,13 @@ RangedEnemy::RangedEnemy(Sequence* sequence)
     mAnimations[E_attack].frames = mSequence->getAnimationFrames("enemy", "idle", "png", 5);
     mAnimations[E_attack].loop = false;
     // jump
-    frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
-    mAnimations[E_jump].frames = mSequence->getAnimationFrames("enemy", "idle", "png", 5);
+    mAnimations[E_jump].frames = mSequence->getAnimationFrames("enemy", "jump", "png", 3);
     mAnimations[E_jump].loop = false;
+    mAnimations[E_jump].fps = 20.0f;
+    // hit
+    mAnimations[E_hit].frames = mSequence->getAnimationFrames("enemy", "hit", "png", 3);
+    mAnimations[E_hit].loop = false;
+    mAnimations[E_hit].fps = 10.0f;
 
     mEnemyMove->setAttackRange(400.0f);
     mEnemyMove->setAttackTime(3.0f);

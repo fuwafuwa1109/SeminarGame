@@ -3,6 +3,7 @@
 
 #include "GamePlay.h"
 #include "EnemyActor.h"
+#include "WeakEnemy.h"
 #include "PlayerActor.h"
 #include "Boss.h"
 #include "StageObject.h"
@@ -138,10 +139,13 @@ void AttackComponent::processAttackEnemy()
 			if (auto boss = dynamic_cast<Boss*>(enemy)) {
 				boss->ApplyDamage(mCurInfo->damage, mCurInfo->tag);
 			}
-			else if (enemy->getHpComp()->TakeDamage(mCurInfo->damage)) {
-				enemy->setState(Actor::Edead);
-				SoundSystem::instance().playSE("YarareSEb");
-			}		
+			else {
+				static_cast<WeakEnemy*>(enemy)->changeState(WeakEnemy::E_hit);
+				if (enemy->getHpComp()->TakeDamage(mCurInfo->damage)) {
+					enemy->setState(Actor::Edead);
+					SoundSystem::instance().playSE("YarareSEb");
+				}
+			}
 			mActive = false;
 		}
 	}

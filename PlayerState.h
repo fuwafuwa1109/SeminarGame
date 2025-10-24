@@ -121,6 +121,9 @@ public:
 private:
     float mChargeTimer;
     float mChargeTime;
+    std::vector<Texture2D*> mChargeFrames;
+    std::vector<Texture2D*> mChargeMaxFrames;
+    bool mChargeMax;
 };
 
 // ’ÊíUŒ‚

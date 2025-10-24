@@ -233,15 +233,25 @@ Charge::Charge(PlayerActor* player)
 	: PlayerState(player, Type::Charge)
 	, mChargeTimer(0.0f)
 	, mChargeTime(0.2f)
+	, mChargeMax(false)
 {
-	std::vector<Texture2D*> frames = { mPlayer->getSequence()->getTexture("Assets/testPlayerCharge.png") };
-	mAnim.frames = frames;
+	mChargeFrames = mPlayer->getSequence()->getAnimationFrames("player", "charge", "png", 6);
+	mChargeMaxFrames = mPlayer->getSequence()->getAnimationFrames("player", "chargeMax", "png", 6);
+	mAnim.frames = mChargeFrames;
 	mAnim.loop = true;
 }
 
 void Charge::input()
 {
 	mChargeTimer += GetFrameTime();
+
+	if (!mChargeMax) {
+		if (mChargeTimer > mChargeTime) {
+			mChargeMax = true;
+			mAnim.frames = mChargeMaxFrames;
+		}
+	}
+
 	if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
 		if (mChargeTimer > mChargeTime) {
 			mPlayer->changeState(Type::ChargeAttack);
@@ -250,6 +260,8 @@ void Charge::input()
 			mPlayer->changeState(Type::Idle);
 		}
 		mChargeTimer = 0.0f;
+		mChargeMax = false;
+		mAnim.frames = mChargeFrames;
 	}
 }
 
@@ -366,8 +378,7 @@ ChargeAttack::ChargeAttack(PlayerActor* player)
 	, mAttackTimer(0.0f)
 	, mAttackTime(0.5f)
 {
-	std::vector<Texture2D*> frames = { mPlayer->getSequence()->getTexture("Assets/testPlayerChargeAttack.png") };
-	mAnim.frames = frames;
+	mAnim.frames = mPlayer->getSequence()->getAnimationFrames("player", "chargeAttack", "png", 3);
 	mAnim.loop = false;
 
 	mAttackInfo.damage = 12.0f;
