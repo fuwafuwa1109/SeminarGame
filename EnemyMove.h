@@ -22,5 +22,7 @@ private:
     float mAttackRange;
     float mAttackTime;
     float mAttackTimer;
+    float mHitTime;
+    float mHitTimer;
 };
 
