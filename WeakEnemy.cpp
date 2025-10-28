@@ -165,17 +165,17 @@ MeleeEnemy::MeleeEnemy(Sequence* sequence)
     // 毎回ロードするわけではないのでとりあえず妥協
 
     // Walk
-    mAnimations[E_walk].frames = mSequence->getAnimationFrames("enemy", "dash", "png", 6);
+    mAnimations[E_walk].frames = mSequence->getAnimationFrames("enemy/melee", "dash", "png", 6);
     mAnimations[E_walk].loop = true;
     // attack
-    mAnimations[E_attack].frames = mSequence->getAnimationFrames("enemy", "attack", "png", 5);
+    mAnimations[E_attack].frames = mSequence->getAnimationFrames("enemy/melee", "attack", "png", 5);
     mAnimations[E_attack].loop = false;
     // jump
-    mAnimations[E_jump].frames = mSequence->getAnimationFrames("enemy", "jump", "png", 3);
+    mAnimations[E_jump].frames = mSequence->getAnimationFrames("enemy/melee", "jump", "png", 3);
     mAnimations[E_jump].loop = false;
     mAnimations[E_jump].fps = 20.0f;
     // hit
-    mAnimations[E_hit].frames = mSequence->getAnimationFrames("enemy", "hit", "png", 3);
+    mAnimations[E_hit].frames = mSequence->getAnimationFrames("enemy/melee", "hit", "png", 3);
     mAnimations[E_hit].loop = false;
     mAnimations[E_hit].fps = 10.0f;
 
@@ -199,7 +199,7 @@ void MeleeEnemy::update()
     fixCollision();
     computeAttackRectPos(mAttackInfo.colRect);
 
-    // 死んだらアイテムを落とす
+    // TODO:死んだらアイテムを落とす
     if (mHpComp->IsKilled()) {
         Actor* item = nullptr;
         int randomValue = GetRandomValue(1, 100);
@@ -243,19 +243,17 @@ RangedEnemy::RangedEnemy(Sequence* sequence)
     std::vector<Texture2D*> frames;
 
     // Walk
-    frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
-    mAnimations[E_walk].frames = mSequence->getAnimationFrames("enemy", "dash", "png", 6);
+    mAnimations[E_walk].frames = mSequence->getAnimationFrames("enemy/ranged", "walk", "png", 6);
     mAnimations[E_walk].loop = true;
     // attack
-    frames = { mSequence->getTexture("Assets/testPlayerIdle.png") };
-    mAnimations[E_attack].frames = mSequence->getAnimationFrames("enemy", "idle", "png", 5);
+    mAnimations[E_attack].frames = mSequence->getAnimationFrames("enemy/ranged", "attack", "png", 8);
     mAnimations[E_attack].loop = false;
     // jump
-    mAnimations[E_jump].frames = mSequence->getAnimationFrames("enemy", "jump", "png", 3);
+    mAnimations[E_jump].frames = mSequence->getAnimationFrames("enemy/ranged", "jump", "png", 3);
     mAnimations[E_jump].loop = false;
     mAnimations[E_jump].fps = 20.0f;
     // hit
-    mAnimations[E_hit].frames = mSequence->getAnimationFrames("enemy", "hit", "png", 3);
+    mAnimations[E_hit].frames = mSequence->getAnimationFrames("enemy/ranged", "hit", "png", 3);
     mAnimations[E_hit].loop = false;
     mAnimations[E_hit].fps = 10.0f;
 

@@ -65,7 +65,7 @@ void LoadSounds()
 	s.loadBGM("stageBGM", "Assets/uchinari_138.mp3");
 	s.loadBGM("BossBGM", "Assets/shippuRaiden.mp3");
 
-	s.loadSE("HealSE", "Assets/Heal.mp3");
+	s.loadSE("ItemSE", "Assets/Heal.mp3");
 	s.loadSE("ExplosionSE", "Assets/Explosion2.mp3");
 	s.loadSE("NormalAtkSE", "Assets/NormalAttack.mp3");
 	s.loadSE("ChargeAtkSE", "Assets/ChargeAttack.mp3");
