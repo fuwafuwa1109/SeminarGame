@@ -35,13 +35,13 @@ void AttackComponent::update()
 		// なお,Actor::TypeはEenenmy,Eplayer,EstageObject以外は使いません
 
 		/* 修正箇所 */
-		if (mCurInfo->targetMask == Actor::Type::Eenemy) {
+		if (mCurInfo->targetMask & Actor::Type::Eenemy) {
 			processAttackEnemy();
 		}
-		if (mCurInfo->targetMask == Actor::Type::Eplayer) {
+		if (mCurInfo->targetMask & Actor::Type::Eplayer) {
 			processAttackPlayer();
 		}
-		if (mCurInfo->targetMask == Actor::Type::EstageObject) {
+		if (mCurInfo->targetMask & Actor::Type::EstageObject) {
 			processAttackStageObj();
 		}
 		/* 修正箇所 */

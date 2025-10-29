@@ -13,7 +13,9 @@ public:
     ItemActor(class Sequence* sequence);
     virtual ~ItemActor() {};
 
+    // プレイヤーとの衝突判定を行っています
     void update() override;
+    // 当たり判定の更新
     void computeRectangle() override;
     // プレイヤーがアイテム触れた時に呼び出される関数
     // 純粋仮想関数にしたので派生クラスで必ず実装しなくてはならない)

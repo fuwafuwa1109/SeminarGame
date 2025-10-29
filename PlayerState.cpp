@@ -208,7 +208,7 @@ void Dodge::input()
 void Dodge::enter()
 {
 	PlayerState::enter();
-	mDodgeSpeed = 1000.0f;
+	mDodgeSpeed = 1500.0f;
 	mPlayer->getPlayerMove()->setVelocityX(mDodgeSpeed);
 }
 
@@ -288,7 +288,7 @@ NormalAttack::NormalAttack(PlayerActor* player)
 	mAttackInfo.tag = DamageTag::MeleeLight;   // ★ 追加：軽攻撃
 
 	// TODO: プログラム体験③ ターゲットレイヤー変更
-	mAttackInfo.targetMask = Actor::Type::Eenemy;
+	mAttackInfo.targetMask = Actor::Type::Eenemy | Actor::Type::EstageObject;
 }
 
 void NormalAttack::update()

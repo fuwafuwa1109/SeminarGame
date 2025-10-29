@@ -7,7 +7,7 @@ class Stage
 public:
     Stage(class GamePlay* sequence);
     ~Stage();
-	void loadStage(const char* filename);
+	void loadStage(const char* stageName);
     void update();
 
     int getStageWidth() const { return mStageWidth; }
@@ -25,5 +25,6 @@ private:
     int mStageHeight;
     struct Rectangle BossEntrance{0,0,0,0};  // {XGAւ̓
     std::vector<Vector2> mEnemySpawnPoints;
+    Texture2D* mBG;
 };
 

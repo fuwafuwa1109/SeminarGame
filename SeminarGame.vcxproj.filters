@@ -88,9 +88,6 @@
     <ClCompile Include="SoundSystem.cpp">
       <Filter>BASE\System</Filter>
     </ClCompile>
-    <ClCompile Include="ItemActor.cpp">
-      <Filter>BASE\Actor\Item</Filter>
-    </ClCompile>
     <ClCompile Include="BossActor.cpp">
       <Filter>BASE\Actor\Enemy</Filter>
     </ClCompile>
@@ -122,6 +119,9 @@
       <Filter>BASE\System</Filter>
     </ClCompile>
     <ClCompile Include="PlayerState.cpp">
+      <Filter>SEMINER</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemActor.cpp">
       <Filter>SEMINER</Filter>
     </ClCompile>
   </ItemGroup>
@@ -269,9 +269,6 @@
     <ClInclude Include="SoundSystem.h">
       <Filter>BASE\System</Filter>
     </ClInclude>
-    <ClInclude Include="ItemActor.h">
-      <Filter>BASE\Actor\Item</Filter>
-    </ClInclude>
     <ClInclude Include="BossHUD.h">
       <Filter>BASE\UI</Filter>
     </ClInclude>
@@ -309,6 +306,9 @@
       <Filter>SEMINER</Filter>
     </ClInclude>
     <ClInclude Include="PlayerState.h">
+      <Filter>SEMINER</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemActor.h">
       <Filter>SEMINER</Filter>
     </ClInclude>
   </ItemGroup>
