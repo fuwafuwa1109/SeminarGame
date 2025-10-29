@@ -10,36 +10,37 @@ void LoadSounds();
 
 int main()
 {
-	/* Window‚Ì‰Šú‰» */
+	/* Windowï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ */
+	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI); // â† å¿…ãš InitWindow ã‚ˆã‚Šå‰
 	InitWindow(WindowWidth, WindowHeight, "SeminarProject");
 	SetTargetFPS(60); // 60FPS
-	SetWindowState(FLAG_VSYNC_HINT); // ‚’¼“¯ŠúON
+	SetWindowState(FLAG_VSYNC_HINT); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ON
 
-	// ƒTƒEƒ“ƒhƒVƒXƒeƒ€‰Šú‰»
+	// ï¿½Tï¿½Eï¿½ï¿½ï¿½hï¿½Vï¿½Xï¿½eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	SoundSystem::init();
-	// ƒTƒEƒ“ƒhƒAƒZƒbƒg‚ðˆêŠ‡ƒ[ƒh
+	// ï¿½Tï¿½Eï¿½ï¿½ï¿½hï¿½Aï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½êŠ‡ï¿½ï¿½ï¿½[ï¿½h
 	LoadSounds();
 
-	// ƒV[ƒPƒ“ƒX‚ð€”õ
+	// ï¿½Vï¿½[ï¿½Pï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	Sequence* currentSequence = new Title();
 
-	// ƒƒCƒ“ƒ‹[ƒv
+	// ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½v
 	while (!WindowShouldClose())
 	{
-		/* “ü—Í */
+		/* ï¿½ï¿½ï¿½ï¿½ */
 		currentSequence->input();
 		
-		/* XV */
+		/* ï¿½Xï¿½V */
 		currentSequence->update();
 
-		/* ƒTƒEƒ“ƒhXV */
+		/* ï¿½Tï¿½Eï¿½ï¿½ï¿½hï¿½Xï¿½V */
 		SoundSystem::instance().update();
 
-		/* •`‰æ */
+		/* ï¿½`ï¿½ï¿½ */
 		currentSequence->draw();
-		DrawFPS(10, 20); // FPS‚ð•\Ž¦ Á‚µ‚Ä‚à‚¢‚¢
+		DrawFPS(10, 20); // FPSï¿½ï¿½\ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½
 	
-		// ƒV[ƒPƒ“ƒXØ‚è‘Ö‚¦
+		// ï¿½Vï¿½[ï¿½Pï¿½ï¿½ï¿½Xï¿½Ø‚ï¿½Ö‚ï¿½
 		Sequence* next = currentSequence->nextSequence();
 		if (next != nullptr) {
 			currentSequence->unloadData();
