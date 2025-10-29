@@ -3,7 +3,6 @@
 #include "SoundSystem.h"
 
 #include "SpriteComponent.h"
-// プレイヤー
 #include "PlayerActor.h"
 #include "HpComponent.h"
 #include "PlayerMove.h"
@@ -34,6 +33,8 @@ void ItemActor::computeRectangle()
 	mRectangle.y = mPosition.y - mRectangle.height / 2.0f;
 }
 
+
+
 SpeedUpItem::SpeedUpItem(Sequence* sequence)
 	: ItemActor(sequence)
 	, mDuration(15.0f)
@@ -59,6 +60,13 @@ void SpeedUpItem::onAcquired()
 }
 
 // TODO: プログラム課題Ex 回復アイテムの実装
+// 回復アイテムのテクスチャはAssetsフォルダにあるHealingItem.pngです。
+// プレイヤーのHpを回復するには,プレイヤーのHpComonentを取得し、そこからRecover()関数を呼び出してください。
+// プレイヤーの体力は100.0fです
+
+/* 以下ヒント */
+// HpComponent.hのインクルードも忘れないようにしましょう
+// Recover関数には回復量を引数として渡しましょう
 
 HealingItem::HealingItem(Sequence* sequence)
 	: ItemActor(sequence)

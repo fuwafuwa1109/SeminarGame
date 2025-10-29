@@ -40,6 +40,7 @@ protected:
     virtual void attack() {};
     virtual Animation& getAnimation(EnemyState state) = 0;
     void computeAttackRectPos(Rectangle& rec);
+    void dropItem();
 
     EnemyState mEnemyState;
     class EnemyMove* mEnemyMove;

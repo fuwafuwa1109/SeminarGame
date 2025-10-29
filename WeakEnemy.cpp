@@ -92,6 +92,33 @@ void WeakEnemy::computeAttackRectPos(Rectangle& rec)
     rec.y = mRectangle.y;
 }
 
+void WeakEnemy::dropItem()
+{
+    // TODO:死んだらアイテムをランダムで落とす
+    Actor* item = nullptr;
+    int randomValue = GetRandomValue(1, 100);
+    if (randomValue < 15) {
+        item = new HealingItem(mSequence);
+    }
+    else if (randomValue < 30) {
+        item = new SpeedUpItem(mSequence);
+    }
+
+    // 位置を設定(変更不要)
+    if (item) {
+        item->setPosition(mPosition);
+        item->computeRectangle();
+    }
+    //Actor* item = nullptr;
+    //int randomValue = GetRandomValue(1, 100); // 1-100までの整数をランダムで得る
+    //if (randomValue < 15) {
+    //    new SpeedUpItem(mSequence);
+    //    // 敵の位置に設定
+    //    item->setPosition(mPosition);
+    //    item->computeRectangle();
+    //}
+}
+
 void WeakEnemy::fixCollision()
 {
     // ステージとの当たり判定
@@ -199,27 +226,8 @@ void MeleeEnemy::update()
     fixCollision();
     computeAttackRectPos(mAttackInfo.colRect);
 
-    // TODO:死んだらアイテムを落とす
     if (mHpComp->IsKilled()) {
-        Actor* item = nullptr;
-        int randomValue = GetRandomValue(1, 100);
-        if(randomValue < 15) {
-            item = new HealingItem(mSequence);
-        }
-        else if (randomValue < 30) {
-            item = new SpeedUpItem(mSequence);
-        }
-        if (item) {
-            item->setPosition(mPosition);
-            item->computeRectangle();
-        }
-
-        //if (randomValue < 15) {
-        //    new SpeedUpItem(mSequence);
-        //    // 敵の位置に設定
-        //    item->setPosition(mPosition);
-        //    item->computeRectangle();
-        //}
+        dropItem();
     }
     // 当たり判定表示
     DrawRectangleRec(mRectangle, WHITE);
@@ -266,18 +274,7 @@ void RangedEnemy::update()
     Actor::update();
     fixCollision();
     if (mHpComp->IsKilled()) {
-        Actor* item = nullptr;
-        int randomValue = GetRandomValue(1, 100);
-        if (randomValue < 15) {
-            item = new HealingItem(mSequence);
-        }
-        else if (randomValue < 30) {
-            item = new SpeedUpItem(mSequence);
-        }
-        if (item) {
-            item->setPosition(mPosition);
-            item->computeRectangle();
-        }
+        dropItem();
     }
     // 当たり判定表示
     DrawRectangleRec(mRectangle, WHITE);
