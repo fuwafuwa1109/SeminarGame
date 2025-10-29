@@ -21,7 +21,10 @@ EnemyMove::EnemyMove(WeakEnemy* owner)
 void EnemyMove::update()
 {
 	// Ž©—R—Ž‰º‚Ö‚Ì‘JˆÚ”»’è‚ðÅ‰‚És‚¤
-	if (mVelocityY > 0.0f && mEnemy->getEnemyState() != WeakEnemy::E_jump) {
+	if (mVelocityY > 0.0f &&
+		mEnemy->getEnemyState() != WeakEnemy::E_jump &&
+		mEnemy->getEnemyState() != WeakEnemy::E_hit)
+	{
 		mEnemy->changeState(WeakEnemy::E_jump);
 	}
 

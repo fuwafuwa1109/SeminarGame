@@ -308,6 +308,7 @@ void GamePlay::onEnterBossArea()
 
 void GamePlay::onBossKilled()
 {
+    mBossHUD->Close();
     mNext = new GameClear();
 }
 

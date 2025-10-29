@@ -19,7 +19,7 @@ WeakEnemy::WeakEnemy(Sequence* sequence)
 {
     mScale = 2.0f;
     mEnemyMove = new EnemyMove(this);
-    mEnemyMove->setMoveSpped(32.0f);
+    mEnemyMove->setMoveSpped(60.0f);
 	mAnimsc = new AnimSpriteComponent(this);
     mHpComp->SetInvincibleDuration(0.0f);
 
@@ -194,6 +194,7 @@ MeleeEnemy::MeleeEnemy(Sequence* sequence)
     // Walk
     mAnimations[E_walk].frames = mSequence->getAnimationFrames("enemy/melee", "dash", "png", 6);
     mAnimations[E_walk].loop = true;
+    mAnimations[E_walk].fps = 10.0f;
     // attack
     mAnimations[E_attack].frames = mSequence->getAnimationFrames("enemy/melee", "attack", "png", 5);
     mAnimations[E_attack].loop = false;
@@ -210,14 +211,14 @@ MeleeEnemy::MeleeEnemy(Sequence* sequence)
     mAttackComp = new AttackComponent(this);
     // UŒ‚î•ñ‚ÌÝ’è
     mAttackInfo.damage = 10.0f;
-    mAttackInfo.duration = 1.0f;
-    mAttackInfo.colRect.width = 16.0f;
-    mAttackInfo.colRect.height = 16.0f;
+    mAttackInfo.duration = 0.3f;
+    mAttackInfo.colRect.width = 40.0f;
+    mAttackInfo.colRect.height = 60.0f;
     computeAttackRectPos(mAttackInfo.colRect);
     mAttackInfo.knockBack = 0.0f;
     mAttackInfo.targetMask = Actor::Type::Eplayer;
 
-    mEnemyMove->setAttackRange(32.0f);
+    mEnemyMove->setAttackRange(60.0f);
 }
 
 void MeleeEnemy::update()
@@ -230,7 +231,7 @@ void MeleeEnemy::update()
         dropItem();
     }
     // “–‚½‚è”»’è•\Ž¦
-    DrawRectangleRec(mRectangle, WHITE);
+   // DrawRectangleRec(mRectangle, WHITE);
 }
 
 void MeleeEnemy::attack()
@@ -253,6 +254,7 @@ RangedEnemy::RangedEnemy(Sequence* sequence)
     // Walk
     mAnimations[E_walk].frames = mSequence->getAnimationFrames("enemy/ranged", "walk", "png", 6);
     mAnimations[E_walk].loop = true;
+    mAnimations[E_walk].fps = 10.0f;
     // attack
     mAnimations[E_attack].frames = mSequence->getAnimationFrames("enemy/ranged", "attack", "png", 8);
     mAnimations[E_attack].loop = false;
@@ -277,7 +279,7 @@ void RangedEnemy::update()
         dropItem();
     }
     // “–‚½‚è”»’è•\Ž¦
-    DrawRectangleRec(mRectangle, WHITE);
+    //DrawRectangleRec(mRectangle, WHITE);
 }
 
 void RangedEnemy::onEnterState(EnemyState nextState)

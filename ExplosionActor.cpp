@@ -17,12 +17,13 @@ ExplosionActor::ExplosionActor(Sequence* sequence)
 	, mActiveTime(0.5f)
 	, mDamageAmt(30.0f)
 	, mActive(true)
+	, mAnimsc(nullptr)
 {
 	mGamePlay = static_cast<GamePlay*>(sequence);
-	mAnimsc = new AnimSpriteComponent(this);
-	mAnim.frames = { mSequence->getTexture("Assets/testBomb.png") };
-	mAnim.loop = true;
-	mAnimsc->play(&mAnim);
+	//mAnimsc = new AnimSpriteComponent(this);
+	//mAnim.frames = { mSequence->getTexture("Assets/testBomb.png") };
+	//mAnim.loop = true;
+	//mAnimsc->play(&mAnim);
 }
 
 void ExplosionActor::update()
@@ -58,8 +59,8 @@ void ExplosionActor::update()
 
 void ExplosionActor::computeRectangle()
 {
-	mRectangle.x = mPosition.x - mAnimsc->getTexWidth() / 2.0f;
-	mRectangle.y = mPosition.y - mAnimsc->getTexHeight() / 2.0f;
-	mRectangle.width = mAnimsc->getTexWidth();
-	mRectangle.height = mAnimsc->getTexHeight();
+	mRectangle.x = mPosition.x - 40.0f / 2.0f;
+	mRectangle.y = mPosition.y - 40.0f / 2.0f;
+	mRectangle.width = 40.0f;
+	mRectangle.height = 40.0f;
 }
