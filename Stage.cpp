@@ -23,15 +23,19 @@ Stage::~Stage()
     mSpawner = nullptr;
 }
 
-void Stage::loadStage(const char* filename)
+void Stage::loadStage(const char* stageName)
 {
+    // 背景画像を設定
+    std::string filename = std::string(stageName) + "tex.png";
+    mBG = mGamePlay->getTexture(filename);
+    filename = std::string(stageName) + ".txt";
+
     BossEntrance = Rectangle{0,1,0,0};
     // ' ' : 何もない
     // # : 壁,床
     // w : Breakable Object 障害物
     // E : 敵出現位置
     // B : ボスエリア入口
-
     std::ifstream file(filename);
     std::string line;
     std::vector<std::vector<char>> tiles;
@@ -143,7 +147,7 @@ void Stage::update()
         mGamePlay->onEnterBossArea();
     }
 
-    DrawRectangleRec(BossEntrance, BLACK);
+    DrawTexture(*mBG, 0, 0, WHITE);
 }
 
 std::vector<struct Rectangle> Stage::getStageRecs() const

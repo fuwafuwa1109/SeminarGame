@@ -35,7 +35,7 @@ GamePlay::GamePlay()
 {
     mStage = new Stage(this);
     // ステージファイルの読み込み
-    mStage->loadStage("Assets/stage0.txt");
+    mStage->loadStage("Assets/stage0");
 
     // とりあえずプレイヤーとスポナーを生成
     mPlayer = new PlayerActor(this);
@@ -255,7 +255,7 @@ void GamePlay::onEnterBossArea()
         delete mObjects.back();
     }
 
-    mStage->loadStage("Assets/stage0_boss.txt");
+    mStage->loadStage("Assets/stage0_boss");
     // ステージから位置を拾ってきてもいいかも
     mPlayer->setPosition(Vector2{ 120.0f, 400.0f });
     mPlayer->computeRectangle();
