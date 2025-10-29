@@ -9,7 +9,7 @@
 /// 雑魚敵のクラス。以下の三種類存在する
 /// ・近接タイプ
 /// ・遠距離タイプ
-/// ・ガードタイプ
+/// (・ガードタイプ)
 /// </summary>
 class WeakEnemy :
     public EnemyActor

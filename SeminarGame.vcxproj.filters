@@ -67,9 +67,6 @@
     <ClCompile Include="CameraSystem.cpp">
       <Filter>BASE\System</Filter>
     </ClCompile>
-    <ClCompile Include="Stage.cpp">
-      <Filter>BASE\System</Filter>
-    </ClCompile>
     <ClCompile Include="EnemySpawner.cpp">
       <Filter>BASE\System</Filter>
     </ClCompile>
@@ -112,9 +109,6 @@
     <ClCompile Include="BossHUD.cpp">
       <Filter>BASE\UI</Filter>
     </ClCompile>
-    <ClCompile Include="StageObject.cpp">
-      <Filter>SEMINER</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>BASE\System</Filter>
     </ClCompile>
@@ -123,6 +117,12 @@
     </ClCompile>
     <ClCompile Include="ItemActor.cpp">
       <Filter>SEMINER</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage.cpp">
+      <Filter>SEMINER</Filter>
+    </ClCompile>
+    <ClCompile Include="StageObject.cpp">
+      <Filter>BASE\Actor\StageObj</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -254,9 +254,6 @@
     <ClInclude Include="EnemySpawner.h">
       <Filter>BASE\System</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerActor.h">
-      <Filter>BASE\Actor\Player</Filter>
-    </ClInclude>
     <ClInclude Include="Boss.h">
       <Filter>BASE\Actor\Enemy</Filter>
     </ClInclude>
@@ -299,9 +296,6 @@
     <ClInclude Include="AttackComponent.h">
       <Filter>SEMINER</Filter>
     </ClInclude>
-    <ClInclude Include="StageObject.h">
-      <Filter>SEMINER</Filter>
-    </ClInclude>
     <ClInclude Include="AttackInfo.h">
       <Filter>SEMINER</Filter>
     </ClInclude>
@@ -310,6 +304,12 @@
     </ClInclude>
     <ClInclude Include="ItemActor.h">
       <Filter>SEMINER</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerActor.h">
+      <Filter>BASE\Actor\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="StageObject.h">
+      <Filter>BASE\Actor\StageObj</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -8,6 +8,7 @@
 #include "PlayerActor.h"
 #include "EnemySpawner.h"
 #include "StageObject.h"
+#include "ItemActor.h"
 
 Stage::Stage(GamePlay* sequence)
     : mGamePlay(sequence)
@@ -36,6 +37,7 @@ void Stage::loadStage(const char* stageName)
     // w : Breakable Object 障害物
     // E : 敵出現位置
     // B : ボスエリア入口
+    // H : 回復アイテム
     std::ifstream file(filename);
     std::string line;
     std::vector<std::vector<char>> tiles;
@@ -105,9 +107,21 @@ void Stage::loadStage(const char* stageName)
                     BossEntrance.width = tileSize;
                     BossEntrance.height = tileSize * 2.0f;
                 }
+                else if (tiles[y][x] == 'H')
+                {
+                    // TODO: プログラム課題Ex ラスト
+                    // ボスを倒してみてください。
+                    // 以下の4行をコメントアウトすると、ボス部屋に回復アイテムが設置されます。
+                    Actor* actor = new HealingItem(mGamePlay); // クラス名は自分で付けたものに変更してください
+                    Vector2 pos = { (float)x * tileSize + tileSize / 2.0f, (float)y * tileSize };
+                    actor->setPosition(pos);
+                    actor->computeRectangle();
+                    // (コメントアウト済み)
+
+                }
             }
         }
-        // s܂1Ăꍇ
+        // 右端
         if (startX != -1)
         {
             Rectangle r;

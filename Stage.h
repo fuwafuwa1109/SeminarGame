@@ -12,19 +12,16 @@ public:
 
     int getStageWidth() const { return mStageWidth; }
 
-    // 
     std::vector<struct Rectangle> getStageRecs() const;
 
 private:
     class GamePlay* mGamePlay;
     class EnemySpawner* mSpawner;
 
-    // ȉ̓Xe[WL̏
-    // Xe[Wǂݍ񂾎lp`̔z(ǂ̕`,collisionɎgp)
     int mStageWidth;
     int mStageHeight;
-    struct Rectangle BossEntrance{0,0,0,0};  // {XGAւ̓
+    struct Rectangle BossEntrance{0,0,0,0};
     std::vector<Vector2> mEnemySpawnPoints;
-    Texture2D* mBG;
+    Texture2D* mBG; // ステージの背景
 };
 

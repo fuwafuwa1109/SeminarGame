@@ -11,12 +11,12 @@ public:
 	// bitƒtƒ‰ƒO‚ÅŠÇ—
 	enum Type
 	{
-		Eplayer			= 1 << 0,
-		Eenemy			= 1 << 1,
-		Eweapon			= 1 << 2,
-		EstageObject	= 1 << 3,
-		Eexplosion		= 1 << 4,
-		Eitem			= 1 << 5,
+		Eplayer			= 1 << 0, // 000001
+		Eenemy			= 1 << 1, // 000010
+		Eweapon			= 1 << 2, // 000100
+		EstageObject	= 1 << 3, // 001000
+		Eexplosion		= 1 << 4, // 010000
+		Eitem			= 1 << 5, // 100000
 	};
 	enum State
 	{
