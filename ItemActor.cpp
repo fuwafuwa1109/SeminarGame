@@ -4,7 +4,6 @@
 
 #include "SpriteComponent.h"
 #include "PlayerActor.h"
-#include "HpComponent.h"
 #include "PlayerMove.h"
 
 ItemActor::ItemActor(Sequence* sequence)
@@ -32,8 +31,6 @@ void ItemActor::computeRectangle()
 	mRectangle.x = mPosition.x - mRectangle.width / 2.0f;
 	mRectangle.y = mPosition.y - mRectangle.height / 2.0f;
 }
-
-
 
 SpeedUpItem::SpeedUpItem(Sequence* sequence)
 	: ItemActor(sequence)
@@ -68,20 +65,3 @@ void SpeedUpItem::onAcquired()
 // HpComponent.h‚ÌƒCƒ“ƒNƒ‹[ƒh‚à–Y‚ê‚È‚¢‚æ‚¤‚É‚µ‚Ü‚µ‚å‚¤
 // RecoverŠÖ”‚É‚Í‰ñ•œ—Ê‚ðˆø”‚Æ‚µ‚Ä“n‚µ‚Ü‚µ‚å‚¤
 
-HealingItem::HealingItem(Sequence* sequence)
-	: ItemActor(sequence)
-	, mHealAmount(20.0f)
-{
-	Texture2D* tex = mSequence->getTexture("Assets/HealingItem.png");
-	mSpriteComp->setTexture(*tex);
-	mRectangle.width = tex->width;
-	mRectangle.height = tex->height;
-}
-
-void HealingItem::onAcquired()
-{
-	static_cast<GamePlay*>(mSequence)->getPlayer()->
-		getHpComp()->Recover(mHealAmount);
-
-	SoundSystem::instance().playSE("ItemSE");
-}

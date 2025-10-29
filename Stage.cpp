@@ -112,10 +112,10 @@ void Stage::loadStage(const char* stageName)
                     // TODO: プログラム課題Ex ラスト
                     // ボスを倒してみてください。
                     // 以下の4行をコメントアウトすると、ボス部屋に回復アイテムが設置されます。
-                    Actor* actor = new HealingItem(mGamePlay); // クラス名は自分で付けたものに変更してください
-                    Vector2 pos = { (float)x * tileSize + tileSize / 2.0f, (float)y * tileSize };
-                    actor->setPosition(pos);
-                    actor->computeRectangle();
+                    //Actor* actor = new HealingItem(mGamePlay); // クラス名は自分で付けたものに変更してください
+                    //Vector2 pos = { (float)x * tileSize + tileSize / 2.0f, (float)y * tileSize };
+                    //actor->setPosition(pos);
+                    //actor->computeRectangle();
                     // (コメントアウト済み)
 
                 }

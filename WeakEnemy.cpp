@@ -96,12 +96,12 @@ void WeakEnemy::dropItem()
 {
     // TODO:死んだらアイテムをランダムで落とす
     Actor* item = nullptr;
-    int randomValue = GetRandomValue(1, 100);
+    int randomValue = GetRandomValue(1, 100); // 1-100までの整数をランダムで得る
     if (randomValue < 15) {
-        item = new HealingItem(mSequence);
-    }
-    else if (randomValue < 30) {
-        item = new SpeedUpItem(mSequence);
+        new SpeedUpItem(mSequence);
+        // 敵がやられた位置に設定
+        item->setPosition(mPosition);
+        item->computeRectangle();
     }
 
     // 位置を設定(変更不要)
@@ -109,14 +109,6 @@ void WeakEnemy::dropItem()
         item->setPosition(mPosition);
         item->computeRectangle();
     }
-    //Actor* item = nullptr;
-    //int randomValue = GetRandomValue(1, 100); // 1-100までの整数をランダムで得る
-    //if (randomValue < 15) {
-    //    new SpeedUpItem(mSequence);
-    //    // 敵の位置に設定
-    //    item->setPosition(mPosition);
-    //    item->computeRectangle();
-    //}
 }
 
 void WeakEnemy::fixCollision()
