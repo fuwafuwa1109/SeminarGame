@@ -16,8 +16,8 @@ LobProjectileActor::LobProjectileActor(GamePlay* seq, Vector2 pos, int forward)
 {
     // 位置と初速
     setPosition(pos);
-    mVelocity      = { 250.0f * (float)forward, -380.0f };  // 横に 250、上向きに 380
-    mForward  = forward;
+    mVelocity = { 250.0f * (float)forward, -380.0f };  // 横に 250、上向きに 380
+    mForward = forward;
 
     // ★ 見た目：存在する矢テクスチャ（testArrow.png を優先）
     Texture2D* tex = mGP->getTexture("Assets/testArrow.png");
@@ -51,10 +51,12 @@ void LobProjectileActor::update() {
     auto* player = mGP->getPlayer();
     if (CheckCollisionRecs(player->getRectangle(), mRectangle)) {
         float dmgLeak = 1.0f;
-        if (player->getPlayerState()->getType() == PlayerState::Type::Guard) {
+        PlayerState* playerState = player->getPlayerState();
+        if (playerState->getType() == PlayerState::Type::Guard) {
+            static_cast<Guard*>(playerState)->onAttacked();
             dmgLeak = 0.5f;
         }
-        else  if (player->getPlayerState()->getType() == PlayerState::Type::Dodge) {
+        else  if (playerState->getType() == PlayerState::Type::Dodge) {
             return;
         }
         player->getHpComp()->TakeDamage(20.0f * dmgLeak);
