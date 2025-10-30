@@ -57,8 +57,9 @@ void SpeedUpItem::onAcquired()
 }
 
 // TODO: プログラム課題Ex 回復アイテムの実装
-// 回復アイテムのテクスチャはAssetsフォルダにあるHealingItem.pngです。
-// プレイヤーのHpを回復するには,プレイヤーのHpComonentを取得し、そこからRecover()関数を呼び出してください。
+// 回復アイテムのテクスチャはAssetsフォルダにあるHealingItem.pngです
+// プレイヤーの取得方法はSpeedUpItemを参考にしてください
+// プレイヤーのHpを回復するには,プレイヤーからgetHpComp()でHpComonentを取得し、そこからRecover()関数を呼び出してください。
 // プレイヤーの体力は100.0fです
 
 /* 以下ヒント */

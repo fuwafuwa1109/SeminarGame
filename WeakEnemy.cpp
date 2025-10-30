@@ -98,14 +98,11 @@ void WeakEnemy::dropItem()
     Actor* item = nullptr;
     int randomValue = GetRandomValue(1, 100); // 1-100までの整数をランダムで得る
     if (randomValue < 15) {
-        new SpeedUpItem(mSequence);
-        // 敵がやられた位置に設定
-        item->setPosition(mPosition);
-        item->computeRectangle();
+        item =new SpeedUpItem(mSequence);
     }
-
     // 位置を設定(変更不要)
     if (item) {
+        // 敵がやられた位置に設定
         item->setPosition(mPosition);
         item->computeRectangle();
     }

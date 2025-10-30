@@ -73,9 +73,6 @@
     <ClCompile Include="PlayerActor.cpp">
       <Filter>BASE\Actor\Player</Filter>
     </ClCompile>
-    <ClCompile Include="WeakEnemy.cpp">
-      <Filter>BASE\Actor\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="Boss.cpp">
       <Filter>BASE\Actor\Enemy</Filter>
     </ClCompile>
@@ -123,6 +120,9 @@
     </ClCompile>
     <ClCompile Include="StageObject.cpp">
       <Filter>BASE\Actor\StageObj</Filter>
+    </ClCompile>
+    <ClCompile Include="WeakEnemy.cpp">
+      <Filter>SEMINER</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
