@@ -50,7 +50,14 @@ void LobProjectileActor::update() {
     // プレイヤーにヒットしたらダメージを与えて消滅
     auto* player = mGP->getPlayer();
     if (CheckCollisionRecs(player->getRectangle(), mRectangle)) {
-        player->getHpComp()->TakeDamage(20.0f);
+        float dmgLeak = 1.0f;
+        if (player->getPlayerState()->getType() == PlayerState::Type::Guard) {
+            dmgLeak = 0.5f;
+        }
+        else  if (player->getPlayerState()->getType() == PlayerState::Type::Dodge) {
+            return;
+        }
+        player->getHpComp()->TakeDamage(20.0f * dmgLeak);
         setState(Actor::Edead);
     }
 }

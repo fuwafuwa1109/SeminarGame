@@ -20,7 +20,7 @@
 static const float kBossHpMax           = 400.0f;
 static const float kGuardMax            = 180.0f;
 static const float kGuardBreakInvincSec = 0.35f; // ガードブレイク直後のガード無敵
-static const float kHpLeakWhileGuard    = 0.10f; // ガード中のHPリーク(10%)
+static const float kHpLeakWhileGuard    = 0.20f; // ガード中のHPリーク(10%)
 
 // ダメージタグ別のガード係数（小さいほどよく減る）
 static const float kGuardCoefNormal     = 1.0f;
@@ -142,6 +142,7 @@ void Boss::tryAttacks(float dt) {
  
          if (mMeleeHeavyCd <= 0.0f) {
              if (CheckCollisionRecs(heavyHit, player->getRectangle())) {
+                 if (player->getPlayerState()->getType() == PlayerState::Type::Dodge) return;
                  player->getHpComp()->TakeDamage(35.0f);
              }
              mMeleeHeavyCd = kCdMeleeHeavy;
@@ -150,6 +151,7 @@ void Boss::tryAttacks(float dt) {
 
          if (mMeleeLightCd <= 0.0f) {
              if (CheckCollisionRecs(lightHit, player->getRectangle())) {
+                 if (player->getPlayerState()->getType() == PlayerState::Type::Dodge) return;
                  player->getHpComp()->TakeDamage(18.0f);
             }
              mMeleeLightCd = kCdMeleeLight;

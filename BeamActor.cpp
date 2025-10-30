@@ -48,7 +48,14 @@ void BeamActor::updateDamage()
     if (CheckCollisionRecs(player->getRectangle(), mRectangle)) {
         mHitThisFrame = true; // DEBUG
         if (auto* hp = player->getHpComp()) {
-            hp->TakeDamage(18.0f);
+            float dmgLeak = 1.0f;
+            if (player->getPlayerState()->getType() == PlayerState::Type::Guard) {
+                dmgLeak = 0.5f;
+            }
+            else  if (player->getPlayerState()->getType() == PlayerState::Type::Dodge) {
+                return;
+            }
+            hp->TakeDamage(18.0f * dmgLeak);
         }
     }
 }
