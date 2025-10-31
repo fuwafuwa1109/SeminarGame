@@ -288,14 +288,14 @@ NormalAttack::NormalAttack(PlayerActor* player)
 	mAttackInfo.tag = DamageTag::MeleeLight;   // ★ 追加：軽攻撃
 
 	// TODO: プログラム体験③ ターゲットレイヤー変更
-	mAttackInfo.targetMask = Actor::Type::Eenemy | Actor::Type::EstageObject;
+	mAttackInfo.targetMask = Actor::Type::Eenemy;
 }
 
 void NormalAttack::update()
 {
 	computeAttackRectPos(mAttackInfo.colRect);
 	// 当たり判定表示
-	DrawRectangleRec(mAttackInfo.colRect, LIGHTGRAY);
+	//DrawRectangleRec(mAttackInfo.colRect, LIGHTGRAY);
 	
 	mAttackTimer += GetFrameTime();
 	if (mAttackTimer >= mAttackTime) {
@@ -342,7 +342,7 @@ void DodgeAttack::update()
 {
 	computeAttackRectPos(mAttackInfo.colRect);
 	// 当たり判定表示
-	DrawRectangleRec(mAttackInfo.colRect, LIGHTGRAY);
+	//DrawRectangleRec(mAttackInfo.colRect, LIGHTGRAY);
 
 	mHorizontalSpeed /= 1.1f;
 	mPlayer->getPlayerMove()->setVelocityX(mHorizontalSpeed);
@@ -397,7 +397,7 @@ void ChargeAttack::update()
 {
 	computeAttackRectPos(mAttackInfo.colRect);
 	// 当たり判定表示
-	DrawRectangleRec(mAttackInfo.colRect, LIGHTGRAY);
+	//DrawRectangleRec(mAttackInfo.colRect, LIGHTGRAY);
 
 	mAttackTimer += GetFrameTime();
 	if (mAttackTimer >= mAttackTime) {

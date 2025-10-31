@@ -49,12 +49,3 @@ private:
 /// <summary>
 /// ‰ñ•œƒAƒCƒeƒ€
 /// </summary>
-class HealingItem
-    : public ItemActor
-{
-public:
-    HealingItem(class Sequence* sequence);
-    void onAcquired() override;
-private:
-    float mHealAmount;
-};

@@ -35,13 +35,13 @@ void AttackComponent::update()
 		// なお,Actor::TypeはEenenmy,Eplayer,EstageObject以外は使いません
 
 		/* 修正箇所 */
-		if (mCurInfo->targetMask & Actor::Type::Eenemy) {
+		if (mCurInfo->targetMask == Actor::Type::Eenemy) {
 			processAttackEnemy();
 		}
-		if (mCurInfo->targetMask & Actor::Type::Eplayer) {
+		if (mCurInfo->targetMask == Actor::Type::Eplayer) {
 			processAttackPlayer();
 		}
-		if (mCurInfo->targetMask & Actor::Type::EstageObject) {
+		if (mCurInfo->targetMask == Actor::Type::EstageObject) {
 			processAttackStageObj();
 		}
 		/* 修正箇所 */
@@ -101,9 +101,8 @@ void AttackComponent::processAttackEnemy()
 			mHitActors.push_back(enemy);
 			
 
-
 			// TODO: プログラム体験①,②
-			/* ------ 敵のノックバックに上方向のベクトルを追加する ------ */
+			/* ------------------- 敵のノックバック関連の処理 -------------------- */
 			
 			// 攻撃者(プレイヤー)の位置と攻撃対象の位置をキャッシュ
 			Vector2 attackerPos = mOwner->getPosition();
@@ -116,14 +115,14 @@ void AttackComponent::processAttackEnemy()
 
 			// ノックバック方向,現在は横方向のみ
 			Vector2 direction = Vector2Normalize(Vector2Subtract(targetPos, attackerPos));
-			direction.y = 0.0f;
+			direction.y -= 0.0f;
 			direction = Vector2Normalize(direction);
 
 			info.target = enemy;
 			info.timer = 0.5f;
 
-			// 現在は攻撃情報からノックバック速度を得ています
-			// ②の課題ではダメージ量によってスケーリングする仕様にする等,工夫してみてください
+
+
 			float speed = mCurInfo->knockBack;
 			info.velocity = Vector2Scale(direction, speed);
 
@@ -131,7 +130,7 @@ void AttackComponent::processAttackEnemy()
 			if (enemy->getType() != EnemyActor::Type::Boss) {
 				mKnockbackTargets.push_back(info);
 			}
-			/* ------ 敵のノックバックに上方向のベクトルを追加する ------ */
+			/* ------------------- 敵のノックバック関連の処理 -------------------- */
 
 
 
@@ -210,3 +209,5 @@ void AttackComponent::processAttackStageObj()
 		}
 	}
 }
+
+// TODO: 課題② kbNormCalculatorの中身を実装

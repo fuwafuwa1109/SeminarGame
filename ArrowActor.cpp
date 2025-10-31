@@ -86,7 +86,7 @@ void ArrowActor::update()
     }
 
     // 当たり判定表示
-    DrawRectangleRec(mRectangle, LIGHTGRAY);
+    //DrawRectangleRec(mRectangle, LIGHTGRAY);
 }
 
 void ArrowActor::onStartAttack()

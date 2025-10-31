@@ -20,10 +20,9 @@ WeaponActor::~WeaponActor()
 
 void WeaponActor::onHit(Actor* target)
 {
-	// �U���͂��v�Z �����_���v�f�������Ă��悳����
 	float damageAmount = mAttackPower * mAttackMultiplier;
-	//�����œ��I�ȃ_���[�W�v�Z���s���B
-	if (target->getType() == Actor::Eenemy) {
+
+	if (target->getType() & Actor::Eenemy) {
         if (auto* enemy = dynamic_cast<EnemyActor*>(target)) {
             if (enemy->getHpComp()->TakeDamage(damageAmount)) {
                 target->setState(Actor::Edead);
@@ -33,7 +32,7 @@ void WeaponActor::onHit(Actor* target)
             // BossActor 側でHP尽きたらEdeadに遷移します
         }
     }
-    else if (target->getType() == Actor::Eplayer) {
+    else if (target->getType() & Actor::Eplayer) {
 
 		static_cast<PlayerActor*>(target)->getHpComp()->TakeDamage(damageAmount);
 	}
